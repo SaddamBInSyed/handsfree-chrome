@@ -4,20 +4,22 @@
   "description": "Browse the web, watch videos, play games, shop, use social media, and more all handsfree by using face gestures to control a pointer!",
   "manifest_version": 2,
 
+  "options_page": "src/options.html",
+
   "icons": {
-    "16": "public/img/favicon.png",
-    "32": "public/img/favicon.png",
-    "48": "public/img/favicon.png",
-    "64": "public/img/favicon.png"
+    "16": "src/assets/img/favicon.png",
+    "32": "src/assets/img/favicon.png",
+    "48": "src/assets/img/favicon.png",
+    "64": "src/assets/img/favicon.png"
   },
 
   "browser_action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup.html",
     "default_icon": {
-      "16": "public/img/favicon.png",
-      "32": "public/img/favicon.png",
-      "48": "public/img/favicon.png",
-      "64": "public/img/favicon.png"
+      "16": "src/assets/img/favicon.png",
+      "32": "src/assets/img/favicon.png",
+      "48": "src/assets/img/favicon.png",
+      "64": "src/assets/img/favicon.png"
     }
   }
 }

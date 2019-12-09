@@ -4,28 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Handsfree Chrome</title>
-    <style>
-      section {
-        width: 350px;
-        height: auto;
-      }
 
-      button {
-        width: 100%;
-        padding: 10px;
-        font-size: 18px;
-        margin-top: 20px;
-      }
-
-      h1 img {
-        float: left;
-        margin-right: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="/src/assets/css/popup.css" />
   </head>
   <body>
     <section>
-      <h1><img src="public/img/favicon.png" width="30" /> Handsfree Chrome</h1>
+      <h1>
+        <img src="/src/assets/img/favicon.png" width="30" /> Handsfree Chrome
+      </h1>
       <p>
         Browse the web, watch videos, play games, shop, use social media, and
         more all handsfree by using face gestures to control a pointer!
@@ -37,7 +23,9 @@
         <li>Smile to one side to click</li>
       </ul>
 
-      <button>Start Webcam</button>
+      <button id="startWebcam">Start Webcam</button>
     </section>
+
+    <script src="/src/assets/js/popup.js"></script>
   </body>
 </html>

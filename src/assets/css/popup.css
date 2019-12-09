@@ -1,0 +1,16 @@
+section {
+  width: 350px;
+  height: auto;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+h1 img {
+  float: left;
+  margin-right: 10px;
+}
