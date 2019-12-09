@@ -6,6 +6,8 @@
 
   "options_page": "src/options.html",
 
+  "permissions": ["storage"],
+
   "icons": {
     "16": "src/assets/img/favicon.png",
     "32": "src/assets/img/favicon.png",
