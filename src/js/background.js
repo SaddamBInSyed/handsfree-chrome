@@ -1,3 +1,8 @@
+chrome.storage.local.set({
+  isHandsfreeStarted: false
+})
+
+// Configure Handsfree
 Handsfree.libSrc = '/src/handsfree/'
 handsfree = new Handsfree({
   isServer: true
@@ -6,16 +11,15 @@ handsfree = new Handsfree({
 /**
  * Sends the inferred values to the client
  */
-Handsfree.use('message.bus', {
-  onFrame(context) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        action: 'updateHead',
-        head: context.head
-      })
+handsfree.onServerFrame = function() {
+  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      action: 'updateHandsfree',
+      head: handsfree.head,
+      pointer: handsfree.pointer
     })
-  }
-})
+  })
+}
 
 /**
  * Override requestAnimationFrame, which doesn't work in background script
@@ -30,13 +34,44 @@ requestAnimationFrame = newRequestAnimationFrame = function(cb) {
 /**
  * Handle listeners
  */
-chrome.runtime.onMessage.addListener(function(message, callback) {
-  switch (message.data) {
+chrome.runtime.onMessage.addListener(function(message) {
+  switch (message.action) {
+    /**
+     * Tell all tabs to start running plugins
+     */
     case 'start':
-      handsfree.start()
+      chrome.storage.local.set(
+        {
+          isHandsfreeStarted: true
+        },
+        function() {
+          chrome.tabs.query({}, function(tabs) {
+            for (var i = 0; i < tabs.length; ++i) {
+              chrome.tabs.sendMessage(tabs[i].id, { action: 'start' })
+            }
+          })
+          handsfree.start()
+        }
+      )
       break
+
+    /**
+     * Tell all tabs to stop listening
+     */
     case 'stop':
-      handsfree.stop()
+      chrome.storage.local.set(
+        {
+          isHandsfreeStarted: false
+        },
+        function() {
+          chrome.tabs.query({}, function(tabs) {
+            for (var i = 0; i < tabs.length; ++i) {
+              chrome.tabs.sendMessage(tabs[i].id, { action: 'stop' })
+            }
+          })
+          handsfree.stop()
+        }
+      )
       break
   }
 })
