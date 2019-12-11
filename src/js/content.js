@@ -10,6 +10,13 @@ chrome.storage.local.get(['isHandsfreeStarted'], function(data) {
 })
 
 /**
+ * Toggle debugger
+ */
+chrome.storage.local.get(['isDebuggerVisible'], function(data) {
+  data.isDebuggerVisible && handsfree.showDebugger()
+})
+
+/**
  * Handle messages from background script
  */
 chrome.runtime.onMessage.addListener(function(request) {

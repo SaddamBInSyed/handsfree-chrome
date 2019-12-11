@@ -1,0 +1,11 @@
+.handsfree-debugger {
+  width: 350px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 999999;
+}
+
+body .handsfree-debugger canvas {
+  transform: scale(1, 1);
+}
