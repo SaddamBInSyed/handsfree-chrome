@@ -1,5 +1,6 @@
-const $start = document.querySelector('#startWebcam')
-const $stop = document.querySelector('#stopWebcam')
+const $start = document.querySelector('#start-webcam')
+const $stop = document.querySelector('#stop-webcam')
+const $toggleDebugger = document.querySelector('#toggle-debugger')
 
 /**
  * Start the webcam
@@ -36,4 +37,11 @@ function setHandsfreeState(isStarted) {
 }
 chrome.storage.local.get(['isHandsfreeStarted'], function(data) {
   setHandsfreeState(data.isHandsfreeStarted)
+})
+
+/**
+ * Toggle the debugger on/off
+ */
+$toggleDebugger.addEventListener('click', () => {
+  chrome.runtime.sendMessage({ action: 'toggleDebugger' })
 })

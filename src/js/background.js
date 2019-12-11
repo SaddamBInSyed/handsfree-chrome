@@ -4,22 +4,47 @@ chrome.storage.local.set({
 
 // Configure Handsfree
 Handsfree.libSrc = '/src/handsfree/'
-handsfree = new Handsfree({
-  isServer: true
+handsfree = new Handsfree()
+Handsfree.disableAll()
+
+/**
+ * Create a plugin to send debug information to tabs
+ */
+Handsfree.use('debugger.streamToTab', () => {
+  if (handsfree.debugger.isVisible) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (!tabs[0]) return
+
+      // Draw webgl into canvas
+      const $webgl2 = handsfree.debugger.canvas
+      const $debug = handsfree.debugger.debug
+      $debug.getContext('2d').drawImage($webgl2, 0, 0)
+
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'updateDebugger',
+        width: $webgl2.width,
+        height: $webgl2.height,
+        imageData: $debug
+          .getContext('2d')
+          .getImageData(0, 0, $webgl2.width, $webgl2.height)
+      })
+    })
+  }
 })
 
 /**
  * Sends the inferred values to the client
  */
-handsfree.onServerFrame = function() {
+Handsfree.use('background.updateHandsfree', ({ head }) => {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    if (!tabs[0]) return
+
     chrome.tabs.sendMessage(tabs[0].id, {
       action: 'updateHandsfree',
-      head: handsfree.head,
-      pointer: handsfree.pointer
+      head
     })
   })
-}
+})
 
 /**
  * Override requestAnimationFrame, which doesn't work in background script
@@ -72,6 +97,32 @@ chrome.runtime.onMessage.addListener(function(message) {
           handsfree.stop()
         }
       )
+      break
+
+    /**
+     * Toggle the debugger
+     */
+    case 'toggleDebugger':
+      chrome.storage.local.get(['isDebuggerVisible'], (data) => {
+        const isVisible = !data.isVisible
+
+        chrome.storage.local.set({ isDebuggerVisible: isVisible }, () => {
+          chrome.tabs.query({}, function(tabs) {
+            for (var i = 0; i < tabs.length; ++i) {
+              chrome.tabs.sendMessage(tabs[i].id, {
+                action: 'toggleDebugger',
+                isVisible
+              })
+
+              if (isVisible) {
+                handsfree.showDebugger()
+              } else {
+                handsfree.hideDebugger()
+              }
+            }
+          })
+        })
+      })
       break
   }
 })
