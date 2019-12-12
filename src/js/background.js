@@ -10,8 +10,18 @@ Handsfree.disableAll()
 /**
  * Create a plugin to send debug information to tabs
  */
-Handsfree.use('debugger.streamToTab', () => {
-  if (handsfree.debugger.isVisible) {
+Handsfree.use('debugger.streamToTab', {
+  onFrame() {
+    if (handsfree.debugger.isVisible) {
+      this.streamDebug()
+    }
+  },
+
+  /**
+   * Stream debug information to client
+   * - This is a secure but very slow process, so lets throttle it
+   */
+  streamDebug: Handsfree.throttle(function() {
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       if (!tabs[0]) return
 
@@ -29,7 +39,7 @@ Handsfree.use('debugger.streamToTab', () => {
           .getImageData(0, 0, $webgl2.width, $webgl2.height)
       })
     })
-  }
+  }, 250)
 })
 
 /**
@@ -104,7 +114,7 @@ chrome.runtime.onMessage.addListener(function(message) {
      */
     case 'toggleDebugger':
       chrome.storage.local.get(['isDebuggerVisible'], (data) => {
-        const isVisible = !data.isVisible
+        const isVisible = !data.isDebuggerVisible
 
         chrome.storage.local.set({ isDebuggerVisible: isVisible }, () => {
           chrome.tabs.query({}, function(tabs) {
