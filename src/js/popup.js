@@ -4,14 +4,18 @@ const $toggleDebugger = document.querySelector('#toggle-debugger')
 
 /**
  * Start the webcam
+ * - If the user hasn't approved permissions yet, then visit the options page first
  */
 $start.addEventListener('click', () => {
-  chrome.runtime.sendMessage({ action: 'start' })
-  setHandsfreeState(true)
-  window.close()
-
-  // Run this when permissions haven't been accepted yet
-  // chrome.tabs.create({ url: '/src/options.html?autostart=true' })
+  chrome.storage.local.get(['hasCapturedStream'], (data) => {
+    if (data.hasCapturedStream) {
+      chrome.runtime.sendMessage({ action: 'start' })
+      setHandsfreeState(true)
+    } else {
+      chrome.tabs.create({ url: '/src/options.html?autostart=true' })
+    }
+    window.close()
+  })
 })
 
 /**
