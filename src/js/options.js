@@ -3,9 +3,16 @@
  * - Happens when a user clicks "start webcam" from popup
  */
 Handsfree.libSrc = '/handsfree/'
-const urlParams = new URLSearchParams(window.location.search)
+handsfree = new Handsfree()
 
-let handsfree
-if (urlParams.get('autostart')) {
-  handsfree = new Handsfree({ autostart: true })
-}
+// Autostart
+// const urlParams = new URLSearchParams(window.location.search)
+// if (urlParams.get('autostart')) {
+//   handsfree.start()
+// }
+
+// Start on button press
+// const $start = document.querySelector('#startWebcam')
+// $start.addEventListener('click', () => {
+//   handsfree.start()
+// })

@@ -5,13 +5,10 @@
   <p><img src="https://i.imgur.com/lBdg97f.gif" alt="handsfree.js"></p>
   <br>
   <h1><small>the</small> Handsfree Chrome Extension</h1>
-  <p>A wrapper library around web-based computer vision models for the purpose of interacting with the web handsfree</p>
+  <p>Browse the web, watch videos, play games, do work, use social media, and more handsfree on Google Chrome 👋</p>
   <p>
-    <img class="mr-1" src="https://img.shields.io/github/release-pre/handsfreejs/handsfree.svg"> <img class="mr-1" src="https://img.shields.io/github/last-commit/handsfreejs/handsfree.svg">
-    <img src="https://img.shields.io/github/repo-size/handsfreejs/handsfree.svg">
-  </p>
-  <p>
-    <img class="mr-1" src="https://img.shields.io/github/issues-raw/handsfreejs/handsfree.svg"> <img src="https://img.shields.io/github/issues-pr-raw/handsfreejs/handsfree.svg">
+    <img class="mr-1" src="https://img.shields.io/github/last-commit/handsfreejs/handsfree-chrome.svg"> <img class="mr-1" src="https://img.shields.io/github/issues/handsfreejs/handsfree-chrome/bugs?label=bugs">
+    <img src="https://img.shields.io/github/issues/handsfreejs/handsfree-chrome/request?label=requests">
   </p>
   <p>Powered by:</p>
   <p><a href="https://github.com/jeeliz/jeelizWeboji"><img width=100 src="https://jeeliz.com/wp-content/uploads/2018/01/LOGO_JEELIZ_BLUE.png"></a></p>
