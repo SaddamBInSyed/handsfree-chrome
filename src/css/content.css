@@ -16,6 +16,11 @@ body .handsfree-debugger canvas {
   top: 50%;
 }
 
+.handsfree-actions-wrap.handsfree-actions-wrap-left {
+  right: 100%;
+  margin-right: -60px;
+}
+
 .handsfree-action-button {
   text-align: center;
   height: 60px;

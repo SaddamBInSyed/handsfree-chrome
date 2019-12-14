@@ -1,4 +1,5 @@
 let actions = []
+let isAttachedRight = true
 
 const handsfree = new Handsfree({
   isClient: true
@@ -15,7 +16,12 @@ addAction('🏠', () => {
   console.log('Clicked 🏠')
 })
 addAction('🔁', () => {
-  console.log('Clicked 🔁')
+  isAttachedRight = !isAttachedRight
+  if (isAttachedRight) {
+    $actionsWrap.classList.remove('handsfree-actions-wrap-left')
+  } else {
+    $actionsWrap.classList.add('handsfree-actions-wrap-left')
+  }
 })
 addAction('👉', () => {
   console.log('Clicked 👉')
