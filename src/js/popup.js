@@ -12,7 +12,7 @@ $start.addEventListener('click', () => {
       chrome.runtime.sendMessage({ action: 'start' })
       setHandsfreeState(true)
     } else {
-      chrome.tabs.create({ url: '/src/options.html?autostart=true' })
+      chrome.tabs.create({ url: '/src/options.html' })
     }
     window.close()
   })

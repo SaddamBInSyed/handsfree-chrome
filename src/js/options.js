@@ -3,16 +3,23 @@
  * - Happens when a user clicks "start webcam" from popup
  */
 Handsfree.libSrc = '/handsfree/'
-handsfree = new Handsfree()
+handsfree = new Handsfree({ autostart: true })
 
-// Autostart
-// const urlParams = new URLSearchParams(window.location.search)
-// if (urlParams.get('autostart')) {
-//   handsfree.start()
-// }
+/**
+ * Plugins only run with a media stream, so lets set a variable to know that we have it
+ */
+Handsfree.use('approved', {
+  onUse() {
+    chrome.storage.local.get(['hasCapturedStream'], (data) => {
+      this.isApproved = data.hasCapturedStream
+    })
+  },
 
-// Start on button press
-// const $start = document.querySelector('#startWebcam')
-// $start.addEventListener('click', () => {
-//   handsfree.start()
-// })
+  onFrame() {
+    if (!this.isApproved) {
+      this.isApproved = true
+      chrome.runtime.sendMessage({ action: 'start' })
+      chrome.storage.local.set({ hasCapturedStream: true })
+    }
+  }
+})
