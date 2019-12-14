@@ -1,5 +1,5 @@
 let actions = []
-let isAttachedRight = true
+let isAttachedLeft = false
 
 const handsfree = new Handsfree({
   isClient: true
@@ -12,15 +12,23 @@ const $actionsWrap = document.createElement('div')
 $actionsWrap.classList.add('handsfree-actions-wrap')
 document.body.appendChild($actionsWrap)
 
+chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
+  if (data.isActionsAttachedLeft) {
+    isAttachedLeft = true
+    $actionsWrap.classList.add('handsfree-actions-wrap-left')
+  }
+})
+
 addAction('🏠', () => {
   console.log('Clicked 🏠')
 })
 addAction('🔁', () => {
-  isAttachedRight = !isAttachedRight
-  if (isAttachedRight) {
-    $actionsWrap.classList.remove('handsfree-actions-wrap-left')
-  } else {
+  isAttachedLeft = !isAttachedLeft
+  chrome.storage.local.set({ isActionsAttachedLeft: isAttachedLeft })
+  if (isAttachedLeft) {
     $actionsWrap.classList.add('handsfree-actions-wrap-left')
+  } else {
+    $actionsWrap.classList.remove('handsfree-actions-wrap-left')
   }
 })
 addAction('👉', () => {
