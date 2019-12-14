@@ -9,3 +9,19 @@
 body .handsfree-debugger canvas {
   transform: scale(1, 1);
 }
+
+.handsfree-actions-wrap {
+  position: fixed;
+  right: 0;
+  top: 50%;
+}
+
+.handsfree-action-button {
+  text-align: center;
+  height: 60px;
+  width: 60px;
+  padding: 10px;
+  font-size: 24px;
+  display: block;
+  line-height: 36px;
+}

@@ -1,6 +1,55 @@
-handsfree = new Handsfree({
+let actions = []
+
+const handsfree = new Handsfree({
   isClient: true
 })
+
+/**
+ * Inject quick actions bar
+ */
+const $actionsWrap = document.createElement('div')
+$actionsWrap.classList.add('handsfree-actions-wrap')
+document.body.appendChild($actionsWrap)
+
+addAction('🏠', () => {
+  console.log('Clicked 🏠')
+})
+addAction('🔁', () => {
+  console.log('Clicked 🔁')
+})
+addAction('👉', () => {
+  console.log('Clicked 👉')
+})
+addAction('👈', () => {
+  console.log('Clicked 👈')
+})
+addAction('🔍', () => {
+  console.log('Clicked 🔍')
+})
+
+/**
+ * Adds an action button to the actions bar
+ * - Updates wrapper z so that it's centered
+ *
+ * @param {String} content
+ * @param {Function} cb The callback to run after a clicked
+ */
+function addAction(content, cb) {
+  const $btn = document.createElement('button')
+  $btn.classList.add('handsfree-action-button')
+  $btn.innerText = content
+
+  actions.push({
+    $el: $btn
+  })
+
+  $actionsWrap.style.marginTop = `${-(actions.length / 2) * 60}px`
+  $actionsWrap.appendChild($btn)
+
+  $btn.addEventListener('click', function() {
+    cb($btn)
+  })
+}
 
 /**
  * Start tracking if background page is started
