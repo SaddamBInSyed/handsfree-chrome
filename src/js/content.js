@@ -9,8 +9,16 @@ const handsfree = new Handsfree({
  * Inject quick actions bar
  */
 const $actionsWrap = document.createElement('div')
-$actionsWrap.classList.add('handsfree-actions-wrap')
+$actionsWrap.classList.add('handsfree-actions-wrap', 'handsfree-hidden')
 document.body.appendChild($actionsWrap)
+
+chrome.storage.local.get(['isHandsfreeStarted'], (data) => {
+  if (data.isHandsfreeStarted) {
+    $actionsWrap.classList.remove('handsfree-hidden')
+  } else {
+    $actionsWrap.classList.add('handsfree-hidden')
+  }
+})
 
 chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
   if (data.isActionsAttachedLeft) {
@@ -22,6 +30,10 @@ chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
 addAction('🏠', () => {
   console.log('Clicked 🏠')
 })
+
+/**
+ * Change quick actions side
+ */
 addAction('🔁', () => {
   isAttachedLeft = !isAttachedLeft
   chrome.storage.local.set({ isActionsAttachedLeft: isAttachedLeft })
@@ -31,12 +43,17 @@ addAction('🔁', () => {
     $actionsWrap.classList.remove('handsfree-actions-wrap-left')
   }
 })
+
+/**
+ * Tab right/left
+ */
 addAction('👉', () => {
-  console.log('Clicked 👉')
+  chrome.runtime.sendMessage({ action: 'nextTab' })
 })
 addAction('👈', () => {
-  console.log('Clicked 👈')
+  chrome.runtime.sendMessage({ action: 'prevTab' })
 })
+
 addAction('🔍', () => {
   console.log('Clicked 🔍')
 })
@@ -96,9 +113,11 @@ chrome.runtime.onMessage.addListener(function(request) {
      */
     case 'start':
       handsfree.start()
+      $actionsWrap.classList.remove('handsfree-hidden')
       break
     case 'stop':
       handsfree.stop()
+      $actionsWrap.classList.add('handsfree-hidden')
       break
 
     /**

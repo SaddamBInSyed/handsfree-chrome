@@ -1,3 +1,7 @@
+.handsfree-hidden {
+  display: none;
+}
+
 .handsfree-debugger {
   width: 350px;
   position: fixed;
