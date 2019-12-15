@@ -27,8 +27,11 @@ chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
   }
 })
 
+/**
+ * Home Button
+ */
 addAction('🏠', () => {
-  console.log('Clicked 🏠')
+  window.location.href = 'https://handsfree.js.org/#/chrome'
 })
 
 /**
@@ -54,8 +57,18 @@ addAction('👈', () => {
   chrome.runtime.sendMessage({ action: 'prevTab' })
 })
 
-addAction('🔍', () => {
-  console.log('Clicked 🔍')
+/**
+ * New tab
+ */
+addAction('➕', () => {
+  chrome.runtime.sendMessage({ action: 'newTab' })
+})
+
+/**
+ * Close tab
+ */
+addAction('❌', () => {
+  chrome.runtime.sendMessage({ action: 'closeTab' })
 })
 
 /**

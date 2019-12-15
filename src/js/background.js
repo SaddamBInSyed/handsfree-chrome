@@ -174,5 +174,23 @@ chrome.runtime.onMessage.addListener(function(message) {
         })
       })
       break
+
+    /**
+     * Create a new tab
+     */
+    case 'newTab':
+      chrome.tabs.create({
+        url: 'https://handsfree.js.org/#/chrome/newtab',
+        active: true
+      })
+      break
+
+    /**
+     * Remove current tab
+     */
+    case 'closeTab':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.remove(tabs[0].id)
+      })
   }
 })
