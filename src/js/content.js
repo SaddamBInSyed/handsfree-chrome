@@ -50,11 +50,21 @@ addAction('🔁', () => {
 /**
  * Tab right/left
  */
+addAction('👈', () => {
+  chrome.runtime.sendMessage({ action: 'prevTab' })
+})
 addAction('👉', () => {
   chrome.runtime.sendMessage({ action: 'nextTab' })
 })
-addAction('👈', () => {
-  chrome.runtime.sendMessage({ action: 'prevTab' })
+
+/**
+ * History
+ */
+addAction('◀', () => {
+  chrome.runtime.sendMessage({ action: 'goBack' })
+})
+addAction('▶', () => {
+  chrome.runtime.sendMessage({ action: 'goForward' })
 })
 
 /**

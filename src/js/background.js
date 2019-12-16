@@ -192,5 +192,16 @@ chrome.runtime.onMessage.addListener(function(message) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.remove(tabs[0].id)
       })
+      break
+
+    /**
+     * Traverse history
+     */
+    case 'goBack':
+      chrome.tabs.goBack()
+      break
+    case 'goForward':
+      chrome.tabs.goForward()
+      break
   }
 })
