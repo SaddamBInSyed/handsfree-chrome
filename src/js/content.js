@@ -1,5 +1,7 @@
 let actions = []
 let isAttachedLeft = false
+let isDashboardOpen = false
+let hasInjectedDashboard = false
 
 const handsfree = new Handsfree({
   isClient: true
@@ -30,8 +32,16 @@ chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
 /**
  * Home Button
  */
-addAction('🏠', () => {
-  window.location.href = 'https://handsfree.js.org/#/chrome'
+addAction('📱', () => {
+  isDashboardOpen = !isDashboardOpen
+  if (isDashboardOpen) {
+    $actionsWrap.classList.add('handsfree-actions-open')
+    !hasInjectedDashboard &&
+      chrome.runtime.sendMessage({ action: 'injectDashboard' })
+    hasInjectedDashboard = true
+  } else {
+    $actionsWrap.classList.remove('handsfree-actions-open')
+  }
 })
 
 /**
@@ -50,12 +60,12 @@ addAction('🔁', () => {
 /**
  * Tab right/left
  */
-addAction('👈', () => {
-  chrome.runtime.sendMessage({ action: 'prevTab' })
-})
-addAction('👉', () => {
-  chrome.runtime.sendMessage({ action: 'nextTab' })
-})
+// addAction('👈', () => {
+//   chrome.runtime.sendMessage({ action: 'prevTab' })
+// })
+// addAction('👉', () => {
+//   chrome.runtime.sendMessage({ action: 'nextTab' })
+// })
 
 /**
  * History
@@ -70,16 +80,16 @@ addAction('▶', () => {
 /**
  * New tab
  */
-addAction('➕', () => {
-  chrome.runtime.sendMessage({ action: 'newTab' })
-})
+// addAction('➕', () => {
+//   chrome.runtime.sendMessage({ action: 'newTab' })
+// })
 
 /**
  * Close tab
  */
-addAction('❌', () => {
-  chrome.runtime.sendMessage({ action: 'closeTab' })
-})
+// addAction('❌', () => {
+//   chrome.runtime.sendMessage({ action: 'closeTab' })
+// })
 
 /**
  * Adds an action button to the actions bar
@@ -97,7 +107,7 @@ function addAction(content, cb) {
     $el: $btn
   })
 
-  $actionsWrap.style.marginTop = `${-(actions.length / 2) * 60}px`
+  $actionsWrap.style.marginTop = `${-(actions.length / 2) * 80}px`
   $actionsWrap.appendChild($btn)
 
   $btn.addEventListener('click', function() {

@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 24px;
+  line-height: 36px;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+input {
+  width: 100%;
+  font-size: 24px;
+  padding: 10px;
+}
+
+button {
+  padding: 10px;
+  font-size: 24px;
+}
+
+label + input {
+  margin-top: 10px;
+}
+
+.handsfree-input-button-pair {
+  position: relative;
+}
+.handsfree-input-button-pair button {
+  width: 100px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.handsfree-input-button-pair input {
+  padding-right: 110px;
+}

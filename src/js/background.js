@@ -203,5 +203,14 @@ chrome.runtime.onMessage.addListener(function(message) {
     case 'goForward':
       chrome.tabs.goForward()
       break
+
+    /**
+     * Injects the dashboard logic
+     */
+    case 'injectDashboard':
+      chrome.tabs.executeScript({
+        file: '/src/js/dashboard.js'
+      })
+      break
   }
 })

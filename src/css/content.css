@@ -19,19 +19,29 @@ body .handsfree-debugger canvas {
   position: fixed;
   right: 0;
   top: 50%;
+  animation: right 0.35s ease;
 }
 
 .handsfree-actions-wrap.handsfree-actions-wrap-left {
   right: 100%;
-  margin-right: -60px;
+  margin-right: -80px;
 }
 
 .handsfree-action-button {
   text-align: center;
-  height: 60px;
-  width: 60px;
+  height: 80px;
+  width: 80px;
   padding: 10px;
   font-size: 24px;
   display: block;
   line-height: 36px;
+}
+
+.handsfree-actions-wrap.handsfree-actions-open {
+  right: 100%;
+  margin-right: -80px;
+}
+
+.handsfree-actions-wrap-left.handsfree-actions-open {
+  right: 80px;
 }
