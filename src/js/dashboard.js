@@ -1,6 +1,18 @@
+const $omnibarInput = document.querySelector(
+  '#handsfree-dashboard-omnibar-input'
+)
+const $omnibarSubmit = document.querySelector(
+  '#handsfree-dashboard-omnibar-button'
+)
+
 /**
- * Inject the dashboard element
+ * Omnibar
  */
-const $dashboardWrap = document.createElement('div')
-$dashboardWrap.id = 'handsfree-dashboard-wrap'
-document.body.appendChild($dashboardWrap)
+$omnibarSubmit.addEventListener('click', () => {
+  const search = $omnibarInput.value
+  if (search.startsWith('http:') || search.startsWith('https:')) {
+    window.location = search
+  } else {
+    window.location = `https://google.com/search?q=${search.replace(/ /g, '+')}`
+  }
+})

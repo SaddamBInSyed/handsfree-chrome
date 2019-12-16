@@ -7,17 +7,21 @@
     <link rel="stylesheet" type="text/css" href="css/dashboard.css" />
   </head>
   <body>
-    <div>
+    <section>
       <label for="handsfree-dashboard-omnibar">Web search or URL:</label>
 
       <div class="handsfree-input-button-pair">
-        <input
-          type="text"
-          id="handsfree-dashboard-omnibar"
-          class="handsfree-dashboard-input-with-button"
-        />
-        <button>Go!</button>
+        <input type="text" id="handsfree-dashboard-omnibar-input" />
+        <button id="handsfree-dashboard-omnibar-button">Go!</button>
       </div>
-    </div>
+    </section>
+
+    <section>
+      <label for="">Tab Actions</label>
+
+      <p><button>➕ New Tab</button> <button>❌ Close Tab</button></p>
+    </section>
+
+    <script src="js/dashboard.js"></script>
   </body>
 </html>

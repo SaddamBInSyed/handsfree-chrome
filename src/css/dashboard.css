@@ -36,3 +36,7 @@ label + input {
 .handsfree-input-button-pair input {
   padding-right: 110px;
 }
+
+section + section {
+  margin-top: 60px;
+}
