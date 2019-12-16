@@ -20,7 +20,7 @@
     }
   ],
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs"],
 
   "icons": {
     "16": "src/assets/img/favicon.png",

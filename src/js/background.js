@@ -134,5 +134,74 @@ chrome.runtime.onMessage.addListener(function(message) {
         })
       })
       break
+
+    /**
+     * Navigate to next tab
+     */
+    case 'nextTab':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs[0].index
+
+        chrome.tabs.query({ currentWindow: true }, (tabs) => {
+          let newTabId = 0
+
+          if (tabs.length > 1) {
+            if (tabId < tabs.length - 1) newTabId = tabId + 1
+            else newTabId = 0
+          }
+
+          chrome.tabs.update(tabs[newTabId].id, { active: true })
+        })
+      })
+      break
+
+    /**
+     * Navigate to previous tab
+     */
+    case 'prevTab':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs[0].index
+
+        chrome.tabs.query({ currentWindow: true }, (tabs) => {
+          let newTabId = 0
+
+          if (tabs.length > 1) {
+            if (tabId > 0) newTabId = tabId - 1
+            else newTabId = tabs.length - 1
+          }
+
+          chrome.tabs.update(tabs[newTabId].id, { active: true })
+        })
+      })
+      break
+
+    /**
+     * Create a new tab
+     */
+    case 'newTab':
+      chrome.tabs.create({
+        url: 'https://handsfree.js.org/#/chrome/newtab',
+        active: true
+      })
+      break
+
+    /**
+     * Remove current tab
+     */
+    case 'closeTab':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.remove(tabs[0].id)
+      })
+      break
+
+    /**
+     * Traverse history
+     */
+    case 'goBack':
+      chrome.tabs.goBack()
+      break
+    case 'goForward':
+      chrome.tabs.goForward()
+      break
   }
 })

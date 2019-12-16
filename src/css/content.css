@@ -1,3 +1,7 @@
+.handsfree-hidden {
+  display: none;
+}
+
 .handsfree-debugger {
   width: 350px;
   position: fixed;
@@ -8,4 +12,26 @@
 
 body .handsfree-debugger canvas {
   transform: scale(1, 1);
+}
+
+.handsfree-actions-wrap {
+  z-index: 99999;
+  position: fixed;
+  right: 0;
+  top: 50%;
+}
+
+.handsfree-actions-wrap.handsfree-actions-wrap-left {
+  right: 100%;
+  margin-right: -60px;
+}
+
+.handsfree-action-button {
+  text-align: center;
+  height: 60px;
+  width: 60px;
+  padding: 10px;
+  font-size: 24px;
+  display: block;
+  line-height: 36px;
 }
