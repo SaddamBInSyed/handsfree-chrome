@@ -208,9 +208,9 @@ chrome.runtime.onMessage.addListener(function(message) {
      * Injects the dashboard logic
      */
     case 'injectDashboard':
-      chrome.tabs.executeScript({
-        file: '/src/js/dashboard.js'
-      })
+      // chrome.tabs.executeScript({
+      //   file: '/src/js/dashboard.js'
+      // })
       break
   }
 })

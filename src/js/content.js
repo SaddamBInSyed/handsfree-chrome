@@ -30,14 +30,29 @@ chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
 })
 
 /**
- * Home Button
+ * Dashboard Button
  */
 addAction('📱', () => {
   isDashboardOpen = !isDashboardOpen
   if (isDashboardOpen) {
     $actionsWrap.classList.add('handsfree-actions-open')
-    !hasInjectedDashboard &&
+
+    if (!hasInjectedDashboard) {
+      // Avoid recursive frame insertion...
+      var extensionOrigin = 'chrome-extension://' + chrome.runtime.id
+      if (!location.ancestorOrigins.contains(extensionOrigin)) {
+        let $wrap = document.createElement('div')
+        $wrap.id = 'handsfree-dashboard-wrap'
+        document.body.appendChild($wrap)
+
+        let $iframe = document.createElement('iframe')
+        $iframe.src = chrome.runtime.getURL('src/dashboard.html')
+        $iframe.id = 'handsfree-dashboard'
+        $wrap.appendChild($iframe)
+      }
+
       chrome.runtime.sendMessage({ action: 'injectDashboard' })
+    }
     hasInjectedDashboard = true
   } else {
     $actionsWrap.classList.remove('handsfree-actions-open')

@@ -45,3 +45,18 @@ body .handsfree-debugger canvas {
 .handsfree-actions-wrap-left.handsfree-actions-open {
   right: 80px;
 }
+
+#handsfree-dashboard-wrap {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-left: 80px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+#handsfree-dashboard-wrap iframe {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+}
