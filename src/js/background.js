@@ -203,5 +203,14 @@ chrome.runtime.onMessage.addListener(function(message) {
     case 'goForward':
       chrome.tabs.goForward()
       break
+
+    /**
+     * Pass clicks through into iframe
+     */
+    case 'clickThroughDashboard':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'start' })
+      })
+      break
   }
 })

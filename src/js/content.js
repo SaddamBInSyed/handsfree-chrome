@@ -1,8 +1,135 @@
 let actions = []
 let isAttachedLeft = false
+let isDashboardOpen = false
+let hasInjectedDashboard = false
+let $dashboardFrame = null
 
 const handsfree = new Handsfree({
   isClient: true
+})
+
+/**
+ * Pass clicks into dashboard
+ */
+Handsfree.use('dashboard.clickThrough', {
+  onFrame({ head }) {
+    if (head.pointer.state === 'mouseDown') {
+      const offset = isAttachedLeft ? 0 : 80
+
+      chrome.runtime.sendMessage({
+        action: 'clickThroughDashboard',
+        pointer: {
+          x: head.pointer.x - offset,
+          y: head.pointer.y
+        }
+      })
+    }
+  }
+})
+
+/**
+ * Adds a virtual keyboard
+ * - Creates the keyboard once an input field is clicked
+ */
+Handsfree.use('virtual.keyboard', {
+  keyboard: null,
+  $target: null,
+  $textarea: null,
+  input: '',
+
+  onFrame({ head }) {
+    if (head.pointer.state === 'mouseDown' && head.pointer.$target) {
+      if (['INPUT', 'TEXTAREA'].includes(head.pointer.$target.nodeName)) {
+        this.showKeyboard()
+        this.$target = head.pointer.$target
+        this.setInput(this.$target.value)
+      }
+    }
+  },
+
+  /**
+   * Either creates or shows the keyboard
+   */
+  showKeyboard() {
+    if (!this.keyboard) {
+      this.createKeyboard()
+    } else {
+      this.$wrap.classList.add('handsfree-simple-keyboard-visible')
+    }
+  },
+
+  /**
+   * Close the keyboard
+   */
+  cancel() {
+    this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
+  },
+
+  /**
+   * Close the keyboard
+   */
+  paste() {
+    this.$target.value = this.$textarea.value
+    this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
+  },
+
+  setInput(input) {
+    this.keyboard.setInput(input)
+    this.$textarea.value = input
+  },
+
+  /**
+   * Creates the keyboard and input area
+   */
+  createKeyboard() {
+    // Container
+    this.$wrap = document.createElement('div')
+    this.$wrap.id = 'handsfree-simple-keyboard-wrap'
+    document.body.appendChild(this.$wrap)
+
+    // Cancel / Paste
+    const $toolbar = document.createElement('div')
+    $toolbar.id = 'handsfree-simple-keyboard-toolbar'
+    this.$wrap.appendChild($toolbar)
+
+    const $cancel = document.createElement('button')
+    $cancel.classList.add('handsfree-button-cancel')
+    $cancel.innerHTML = 'Cancel'
+    $toolbar.appendChild($cancel)
+    $cancel.addEventListener('click', () => {
+      this.cancel()
+    })
+
+    const $paste = document.createElement('button')
+    $paste.classList.add('handsfree-button-paste')
+    $paste.innerHTML = 'Paste'
+    $toolbar.appendChild($paste)
+    $paste.addEventListener('click', () => {
+      this.paste()
+    })
+
+    // Textarea
+    this.$textarea = document.createElement('textarea')
+    this.$textarea.id = 'handsfree-simple-keyboard-input'
+    this.$textarea.setAttribute('rows', 3)
+    this.$wrap.appendChild(this.$textarea)
+
+    // Keyboard
+    const $simpleKeyboard = document.createElement('div')
+    $simpleKeyboard.classList.add('simple-keyboard')
+    this.$wrap.appendChild($simpleKeyboard)
+    setTimeout(() => {
+      this.$wrap.classList.add('handsfree-simple-keyboard-visible')
+    }, 50)
+
+    this.keyboard = new SimpleKeyboard.default({
+      useMouseEvents: true,
+
+      onChange: (input) => {
+        this.$textarea.value = input
+      }
+    })
+  }
 })
 
 /**
@@ -28,10 +155,48 @@ chrome.storage.local.get(['isActionsAttachedLeft'], (data) => {
 })
 
 /**
- * Home Button
+ * Dashboard Button
  */
-addAction('🏠', () => {
-  window.location.href = 'https://handsfree.js.org/#/chrome'
+addAction('📱', () => {
+  isDashboardOpen = !isDashboardOpen
+  if (isDashboardOpen) {
+    $actionsWrap.classList.add('handsfree-actions-open')
+
+    if (!hasInjectedDashboard) {
+      // Avoid recursive frame insertion...
+      var extensionOrigin = 'chrome-extension://' + chrome.runtime.id
+      if (!location.ancestorOrigins.contains(extensionOrigin)) {
+        let $wrap = document.createElement('div')
+        $wrap.id = 'handsfree-dashboard-wrap'
+        document.body.appendChild($wrap)
+
+        $dashboardFrame = document.createElement('iframe')
+        $dashboardFrame.src = chrome.runtime.getURL('src/dashboard.html')
+        $dashboardFrame.id = 'handsfree-dashboard'
+        $wrap.appendChild($dashboardFrame)
+
+        isAttachedLeft && $wrap.classList.add('handsfree-dashboard-wrap-left')
+
+        // @FIXME this seems flaky
+        setTimeout(() => {
+          $wrap.classList.add('handsfree-dashboard-visible')
+        }, 50)
+      }
+
+      chrome.runtime.sendMessage({ action: 'injectDashboard' })
+    } else {
+      document
+        .querySelector('#handsfree-dashboard-wrap')
+        .classList.add('handsfree-dashboard-visible')
+    }
+
+    hasInjectedDashboard = true
+  } else {
+    document
+      .querySelector('#handsfree-dashboard-wrap')
+      .classList.remove('handsfree-dashboard-visible')
+    $actionsWrap.classList.remove('handsfree-actions-open')
+  }
 })
 
 /**
@@ -40,21 +205,15 @@ addAction('🏠', () => {
 addAction('🔁', () => {
   isAttachedLeft = !isAttachedLeft
   chrome.storage.local.set({ isActionsAttachedLeft: isAttachedLeft })
+  const $dashboard = document.querySelector('#handsfree-dashboard-wrap')
+
   if (isAttachedLeft) {
+    $dashboard && $dashboard.classList.add('handsfree-dashboard-wrap-left')
     $actionsWrap.classList.add('handsfree-actions-wrap-left')
   } else {
+    $dashboard && $dashboard.classList.remove('handsfree-dashboard-wrap-left')
     $actionsWrap.classList.remove('handsfree-actions-wrap-left')
   }
-})
-
-/**
- * Tab right/left
- */
-addAction('👈', () => {
-  chrome.runtime.sendMessage({ action: 'prevTab' })
-})
-addAction('👉', () => {
-  chrome.runtime.sendMessage({ action: 'nextTab' })
 })
 
 /**
@@ -65,20 +224,6 @@ addAction('◀', () => {
 })
 addAction('▶', () => {
   chrome.runtime.sendMessage({ action: 'goForward' })
-})
-
-/**
- * New tab
- */
-addAction('➕', () => {
-  chrome.runtime.sendMessage({ action: 'newTab' })
-})
-
-/**
- * Close tab
- */
-addAction('❌', () => {
-  chrome.runtime.sendMessage({ action: 'closeTab' })
 })
 
 /**
@@ -97,7 +242,7 @@ function addAction(content, cb) {
     $el: $btn
   })
 
-  $actionsWrap.style.marginTop = `${-(actions.length / 2) * 60}px`
+  $actionsWrap.style.marginTop = `${-(actions.length / 2) * 80}px`
   $actionsWrap.appendChild($btn)
 
   $btn.addEventListener('click', function() {

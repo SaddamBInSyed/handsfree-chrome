@@ -15,23 +15,123 @@ body .handsfree-debugger canvas {
 }
 
 .handsfree-actions-wrap {
-  z-index: 99999;
+  z-index: 100000;
   position: fixed;
   right: 0;
   top: 50%;
+  transition: right 0.5s ease, margin-right 0.5s ease;
 }
 
 .handsfree-actions-wrap.handsfree-actions-wrap-left {
   right: 100%;
-  margin-right: -60px;
+  margin-right: -80px;
+}
+
+.handsfree-hidden {
+  display: none;
 }
 
 .handsfree-action-button {
   text-align: center;
-  height: 60px;
-  width: 60px;
+  height: 80px;
+  width: 80px;
   padding: 10px;
   font-size: 24px;
-  display: block;
+  display: block !important;
   line-height: 36px;
+  background: #0095ff;
+  border: 1px solid #07c;
+  box-shadow: inset 0 1px 0 #66bfff;
+  color: #fff;
+}
+.handsfree-action-button:first-child {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.handsfree-action-button:last-child {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.handsfree-actions-wrap.handsfree-actions-open {
+  right: 100%;
+  margin-right: -80px;
+}
+
+.handsfree-actions-wrap-left.handsfree-actions-open {
+  right: 80px;
+}
+
+#handsfree-dashboard-wrap {
+  position: fixed;
+  left: 100%;
+  top: 0;
+  padding-left: 80px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 99999;
+  transition: left 0.5s ease, padding-left 0.5s ease, padding-right 0.5s ease;
+}
+#handsfree-dashboard-wrap.handsfree-dashboard-visible {
+  left: 0;
+}
+#handsfree-dashboard-wrap iframe {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+#handsfree-dashboard-wrap.handsfree-dashboard-wrap-left {
+  padding-left: 0;
+  padding-right: 80px;
+}
+
+/* Keyboard */
+#handsfree-simple-keyboard-wrap {
+  position: fixed;
+  z-index: 100001;
+  background: #ccc;
+  transition: bottom 0.5s ease;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+#handsfree-simple-keyboard-wrap.handsfree-simple-keyboard-visible {
+  bottom: 0;
+}
+
+#handsfree-simple-keyboard-toolbar {
+  display: flex;
+}
+
+#handsfree-simple-keyboard-toolbar button {
+  flex: 1 1 auto;
+  height: 70px;
+  background: #0095ff;
+  border: 1px solid #07c;
+  box-shadow: inset 0 1px 0 #66bfff;
+  color: #fff;
+}
+
+#handsfree-simple-keyboard-toolbar button.handsfree-button-cancel {
+  background: #f23f4f;
+  border: 1px solid #94333c;
+  box-shadow: inset 0 1px 0 #edb9be;
+}
+
+#handsfree-simple-keyboard-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 24px;
+  line-height: 36px;
+  padding: 20px;
+}
+
+#handsfree-simple-keyboard-wrap .simple-keyboard .hg-button {
+  height: 80px;
+  font-size: 24px;
 }

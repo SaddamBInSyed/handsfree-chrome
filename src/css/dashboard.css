@@ -1,0 +1,49 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 24px;
+  line-height: 36px;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+input {
+  width: 100%;
+  font-size: 24px;
+  padding: 10px;
+}
+
+button {
+  padding: 20px;
+  height: 70px;
+  font-size: 24px;
+  background: #0095ff;
+  border: 1px solid #07c;
+  box-shadow: inset 0 1px 0 #66bfff;
+  color: #fff;
+}
+
+label + input {
+  margin-top: 10px;
+}
+
+.handsfree-input-button-pair {
+  position: relative;
+}
+.handsfree-input-button-pair button {
+  width: 100px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 51px;
+  line-height: 12px;
+}
+.handsfree-input-button-pair input {
+  padding-right: 110px;
+}
+
+section + section {
+  margin-top: 60px;
+}
