@@ -205,12 +205,12 @@ chrome.runtime.onMessage.addListener(function(message) {
       break
 
     /**
-     * Injects the dashboard logic
+     * Pass clicks through into iframe
      */
-    case 'injectDashboard':
-      // chrome.tabs.executeScript({
-      //   file: '/src/js/dashboard.js'
-      // })
+    case 'clickThroughDashboard':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'start' })
+      })
       break
   }
 })

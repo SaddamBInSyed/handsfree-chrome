@@ -32,3 +32,30 @@ document.querySelector('#handsfree-next-tab').addEventListener('click', () => {
 document.querySelector('#handsfree-prev-tab').addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'prevTab' })
 })
+
+chrome.runtime.onMessage.addListener(function(request) {
+  switch (request.action) {
+    case 'clickThroughDashboard':
+      const $el = document.elementFromPoint(
+        request.pointer.x,
+        request.pointer.y
+      )
+
+      if ($el) {
+        $el.dispatchEvent(
+          new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            clientX: request.pointer.x,
+            clientY: request.pointer.y
+          })
+        )
+
+        // Focus
+        if (['INPUT', 'TEXTAREA', 'BUTTON', 'A'].includes($el.nodeName))
+          $el.focus()
+      }
+
+      break
+  }
+})

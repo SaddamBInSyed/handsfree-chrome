@@ -2,6 +2,7 @@ let actions = []
 let isAttachedLeft = false
 let isDashboardOpen = false
 let hasInjectedDashboard = false
+let $dashboardFrame = null
 
 const handsfree = new Handsfree({
   isClient: true
@@ -45,10 +46,10 @@ addAction('📱', () => {
         $wrap.id = 'handsfree-dashboard-wrap'
         document.body.appendChild($wrap)
 
-        let $iframe = document.createElement('iframe')
-        $iframe.src = chrome.runtime.getURL('src/dashboard.html')
-        $iframe.id = 'handsfree-dashboard'
-        $wrap.appendChild($iframe)
+        $dashboardFrame = document.createElement('iframe')
+        $dashboardFrame.src = chrome.runtime.getURL('src/dashboard.html')
+        $dashboardFrame.id = 'handsfree-dashboard'
+        $wrap.appendChild($dashboardFrame)
 
         isAttachedLeft && $wrap.classList.add('handsfree-dashboard-wrap-left')
 
@@ -71,6 +72,25 @@ addAction('📱', () => {
       .querySelector('#handsfree-dashboard-wrap')
       .classList.remove('handsfree-dashboard-visible')
     $actionsWrap.classList.remove('handsfree-actions-open')
+  }
+})
+
+/**
+ * Pass clicks into dashboard
+ */
+Handsfree.use('dashboard.clickThrough', {
+  onFrame({ head }) {
+    if (head.pointer.state === 'mouseDown') {
+      const offset = isAttachedLeft ? 0 : 80
+
+      chrome.runtime.sendMessage({
+        action: 'clickThroughDashboard',
+        pointer: {
+          x: head.pointer.x - offset,
+          y: head.pointer.y
+        }
+      })
+    }
   }
 })
 
