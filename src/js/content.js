@@ -34,6 +34,7 @@ Handsfree.use('dashboard.clickThrough', {
 Handsfree.use('virtual.keyboard', {
   keyboard: null,
   $target: null,
+  $textarea: null,
 
   onFrame({ head }) {
     if (head.pointer.state === 'mouseDown' && head.pointer.$target) {
@@ -48,17 +49,32 @@ Handsfree.use('virtual.keyboard', {
     if (!this.keyboard) this.createKeyboard()
   },
 
+  /**
+   * Creates the keyboard and input area
+   */
   createKeyboard() {
-    this.$wrap = document.createElement('DIV')
+    // Container
+    this.$wrap = document.createElement('div')
     this.$wrap.id = 'handsfree-simple-keyboard-wrap'
     document.body.appendChild(this.$wrap)
-    const $simpleKeyboard = document.createElement('DIV')
+
+    // Textarea
+    this.$textarea = document.createElement('textarea')
+    this.$textarea.id = 'handsfree-simple-keyboard-input'
+    this.$textarea.setAttribute('rows', 3)
+    this.$wrap.appendChild(this.$textarea)
+
+    // Keyboard
+    const $simpleKeyboard = document.createElement('div')
     $simpleKeyboard.classList.add('simple-keyboard')
     this.$wrap.appendChild($simpleKeyboard)
+    setTimeout(() => {
+      this.$wrap.classList.add('handsfree-simple-keyboard-visible')
+    }, 50)
 
     this.keyboard = new SimpleKeyboard.default({
       onChange: (input) => {
-        this.$target.value = input
+        this.$textarea.value = input
       }
     })
   }

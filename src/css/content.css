@@ -88,14 +88,28 @@ body .handsfree-debugger canvas {
   padding-right: 80px;
 }
 
+/* Keyboard */
 #handsfree-simple-keyboard-wrap {
   position: fixed;
   z-index: 100001;
   background: #ccc;
-  bottom: 0;
+  transition: bottom 0.5s ease;
+  bottom: -100%;
   left: 0;
   width: 100%;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+#handsfree-simple-keyboard-wrap.handsfree-simple-keyboard-visible {
+  bottom: 0;
+}
+
+#handsfree-simple-keyboard-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 24px;
+  line-height: 36px;
+  padding: 20px;
 }
 
 #handsfree-simple-keyboard-wrap .simple-keyboard .hg-button {
