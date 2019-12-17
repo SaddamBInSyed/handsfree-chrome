@@ -64,13 +64,17 @@ body .handsfree-debugger canvas {
 
 #handsfree-dashboard-wrap {
   position: fixed;
-  left: 0;
+  left: 100%;
   top: 0;
   padding-left: 80px;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
   z-index: 99999;
+  transition: left 0.5s ease, padding-left 0.5s ease, padding-right 0.5s ease;
+}
+#handsfree-dashboard-wrap.handsfree-dashboard-visible {
+  left: 0;
 }
 #handsfree-dashboard-wrap iframe {
   width: 100%;

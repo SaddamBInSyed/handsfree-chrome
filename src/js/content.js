@@ -51,20 +51,25 @@ addAction('📱', () => {
         $wrap.appendChild($iframe)
 
         isAttachedLeft && $wrap.classList.add('handsfree-dashboard-wrap-left')
+
+        // @FIXME this seems flaky
+        setTimeout(() => {
+          $wrap.classList.add('handsfree-dashboard-visible')
+        }, 50)
       }
 
       chrome.runtime.sendMessage({ action: 'injectDashboard' })
     } else {
       document
         .querySelector('#handsfree-dashboard-wrap')
-        .classList.remove('handsfree-hidden')
+        .classList.add('handsfree-dashboard-visible')
     }
 
     hasInjectedDashboard = true
   } else {
     document
       .querySelector('#handsfree-dashboard-wrap')
-      .classList.add('handsfree-hidden')
+      .classList.remove('handsfree-dashboard-visible')
     $actionsWrap.classList.remove('handsfree-actions-open')
   }
 })
