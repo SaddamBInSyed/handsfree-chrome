@@ -49,12 +49,22 @@ addAction('📱', () => {
         $iframe.src = chrome.runtime.getURL('src/dashboard.html')
         $iframe.id = 'handsfree-dashboard'
         $wrap.appendChild($iframe)
+
+        isAttachedLeft && $wrap.classList.add('handsfree-dashboard-wrap-left')
       }
 
       chrome.runtime.sendMessage({ action: 'injectDashboard' })
+    } else {
+      document
+        .querySelector('#handsfree-dashboard-wrap')
+        .classList.remove('handsfree-hidden')
     }
+
     hasInjectedDashboard = true
   } else {
+    document
+      .querySelector('#handsfree-dashboard-wrap')
+      .classList.add('handsfree-hidden')
     $actionsWrap.classList.remove('handsfree-actions-open')
   }
 })
@@ -65,22 +75,16 @@ addAction('📱', () => {
 addAction('🔁', () => {
   isAttachedLeft = !isAttachedLeft
   chrome.storage.local.set({ isActionsAttachedLeft: isAttachedLeft })
+  const $dashboard = document.querySelector('#handsfree-dashboard-wrap')
+
   if (isAttachedLeft) {
+    $dashboard && $dashboard.classList.add('handsfree-dashboard-wrap-left')
     $actionsWrap.classList.add('handsfree-actions-wrap-left')
   } else {
+    $dashboard && $dashboard.classList.remove('handsfree-dashboard-wrap-left')
     $actionsWrap.classList.remove('handsfree-actions-wrap-left')
   }
 })
-
-/**
- * Tab right/left
- */
-// addAction('👈', () => {
-//   chrome.runtime.sendMessage({ action: 'prevTab' })
-// })
-// addAction('👉', () => {
-//   chrome.runtime.sendMessage({ action: 'nextTab' })
-// })
 
 /**
  * History
@@ -91,20 +95,6 @@ addAction('◀', () => {
 addAction('▶', () => {
   chrome.runtime.sendMessage({ action: 'goForward' })
 })
-
-/**
- * New tab
- */
-// addAction('➕', () => {
-//   chrome.runtime.sendMessage({ action: 'newTab' })
-// })
-
-/**
- * Close tab
- */
-// addAction('❌', () => {
-//   chrome.runtime.sendMessage({ action: 'closeTab' })
-// })
 
 /**
  * Adds an action button to the actions bar

@@ -15,16 +15,20 @@ body .handsfree-debugger canvas {
 }
 
 .handsfree-actions-wrap {
-  z-index: 99999;
+  z-index: 100000;
   position: fixed;
   right: 0;
   top: 50%;
-  animation: right 0.35s ease;
+  transition: right 0.5s ease, margin-right 0.5s ease;
 }
 
 .handsfree-actions-wrap.handsfree-actions-wrap-left {
   right: 100%;
   margin-right: -80px;
+}
+
+.handsfree-hidden {
+  display: none;
 }
 
 .handsfree-action-button {
@@ -33,8 +37,20 @@ body .handsfree-debugger canvas {
   width: 80px;
   padding: 10px;
   font-size: 24px;
-  display: block;
+  display: block !important;
   line-height: 36px;
+  background: #0095ff;
+  border: 1px solid #07c;
+  box-shadow: inset 0 1px 0 #66bfff;
+  color: #fff;
+}
+.handsfree-action-button:first-child {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.handsfree-action-button:last-child {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 .handsfree-actions-wrap.handsfree-actions-open {
@@ -54,9 +70,16 @@ body .handsfree-debugger canvas {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
+  z-index: 99999;
 }
 #handsfree-dashboard-wrap iframe {
   width: 100%;
   height: 100%;
   background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+#handsfree-dashboard-wrap.handsfree-dashboard-wrap-left {
+  padding-left: 0;
+  padding-right: 80px;
 }
