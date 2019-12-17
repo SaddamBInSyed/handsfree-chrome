@@ -104,6 +104,25 @@ body .handsfree-debugger canvas {
   bottom: 0;
 }
 
+#handsfree-simple-keyboard-toolbar {
+  display: flex;
+}
+
+#handsfree-simple-keyboard-toolbar button {
+  flex: 1 1 auto;
+  height: 70px;
+  background: #0095ff;
+  border: 1px solid #07c;
+  box-shadow: inset 0 1px 0 #66bfff;
+  color: #fff;
+}
+
+#handsfree-simple-keyboard-toolbar button.handsfree-button-cancel {
+  background: #f23f4f;
+  border: 1px solid #94333c;
+  box-shadow: inset 0 1px 0 #edb9be;
+}
+
 #handsfree-simple-keyboard-input {
   width: 100%;
   box-sizing: border-box;

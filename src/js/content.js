@@ -35,18 +35,47 @@ Handsfree.use('virtual.keyboard', {
   keyboard: null,
   $target: null,
   $textarea: null,
+  input: '',
 
   onFrame({ head }) {
     if (head.pointer.state === 'mouseDown' && head.pointer.$target) {
       if (['INPUT', 'TEXTAREA'].includes(head.pointer.$target.nodeName)) {
         this.showKeyboard()
         this.$target = head.pointer.$target
+        this.setInput(this.$target.value)
       }
     }
   },
 
+  /**
+   * Either creates or shows the keyboard
+   */
   showKeyboard() {
-    if (!this.keyboard) this.createKeyboard()
+    if (!this.keyboard) {
+      this.createKeyboard()
+    } else {
+      this.$wrap.classList.add('handsfree-simple-keyboard-visible')
+    }
+  },
+
+  /**
+   * Close the keyboard
+   */
+  cancel() {
+    this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
+  },
+
+  /**
+   * Close the keyboard
+   */
+  paste() {
+    this.$target.value = this.$textarea.value
+    this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
+  },
+
+  setInput(input) {
+    this.keyboard.setInput(input)
+    this.$textarea.value = input
   },
 
   /**
@@ -57,6 +86,27 @@ Handsfree.use('virtual.keyboard', {
     this.$wrap = document.createElement('div')
     this.$wrap.id = 'handsfree-simple-keyboard-wrap'
     document.body.appendChild(this.$wrap)
+
+    // Cancel / Paste
+    const $toolbar = document.createElement('div')
+    $toolbar.id = 'handsfree-simple-keyboard-toolbar'
+    this.$wrap.appendChild($toolbar)
+
+    const $cancel = document.createElement('button')
+    $cancel.classList.add('handsfree-button-cancel')
+    $cancel.innerHTML = 'Cancel'
+    $toolbar.appendChild($cancel)
+    $cancel.addEventListener('click', () => {
+      this.cancel()
+    })
+
+    const $paste = document.createElement('button')
+    $paste.classList.add('handsfree-button-paste')
+    $paste.innerHTML = 'Paste'
+    $toolbar.appendChild($paste)
+    $paste.addEventListener('click', () => {
+      this.paste()
+    })
 
     // Textarea
     this.$textarea = document.createElement('textarea')
@@ -73,6 +123,8 @@ Handsfree.use('virtual.keyboard', {
     }, 50)
 
     this.keyboard = new SimpleKeyboard.default({
+      useMouseEvents: true,
+
       onChange: (input) => {
         this.$textarea.value = input
       }
