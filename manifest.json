@@ -15,8 +15,16 @@
     {
       "matches": ["*://*/*"],
       "exclude_matches": ["*://localhost/*"],
-      "css": ["src/handsfree/handsfree.css", "src/css/content.css"],
-      "js": ["src/handsfree/handsfree.js", "src/js/content.js"]
+      "css": [
+        "src/handsfree/handsfree.css",
+        "src/css/content.css",
+        "src/lib/simple-keyboard/css/index.css"
+      ],
+      "js": [
+        "src/handsfree/handsfree.js",
+        "src/js/content.js",
+        "src/lib/simple-keyboard/simple-keyboard.js"
+      ]
     }
   ],
 

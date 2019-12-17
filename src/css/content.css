@@ -87,3 +87,17 @@ body .handsfree-debugger canvas {
   padding-left: 0;
   padding-right: 80px;
 }
+
+#handsfree-simple-keyboard-wrap {
+  position: fixed;
+  z-index: 100001;
+  background: #ccc;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+#handsfree-simple-keyboard-wrap .simple-keyboard .hg-button {
+  height: 80px;
+}

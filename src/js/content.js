@@ -9,6 +9,62 @@ const handsfree = new Handsfree({
 })
 
 /**
+ * Pass clicks into dashboard
+ */
+Handsfree.use('dashboard.clickThrough', {
+  onFrame({ head }) {
+    if (head.pointer.state === 'mouseDown') {
+      const offset = isAttachedLeft ? 0 : 80
+
+      chrome.runtime.sendMessage({
+        action: 'clickThroughDashboard',
+        pointer: {
+          x: head.pointer.x - offset,
+          y: head.pointer.y
+        }
+      })
+    }
+  }
+})
+
+/**
+ * Adds a virtual keyboard
+ * - Creates the keyboard once an input field is clicked
+ */
+Handsfree.use('virtual.keyboard', {
+  keyboard: null,
+  $target: null,
+
+  onFrame({ head }) {
+    if (head.pointer.state === 'mouseDown' && head.pointer.$target) {
+      if (['INPUT', 'TEXTAREA'].includes(head.pointer.$target.nodeName)) {
+        this.showKeyboard()
+        this.$target = head.pointer.$target
+      }
+    }
+  },
+
+  showKeyboard() {
+    if (!this.keyboard) this.createKeyboard()
+  },
+
+  createKeyboard() {
+    this.$wrap = document.createElement('DIV')
+    this.$wrap.id = 'handsfree-simple-keyboard-wrap'
+    document.body.appendChild(this.$wrap)
+    const $simpleKeyboard = document.createElement('DIV')
+    $simpleKeyboard.classList.add('simple-keyboard')
+    this.$wrap.appendChild($simpleKeyboard)
+
+    this.keyboard = new SimpleKeyboard.default({
+      onChange: (input) => {
+        this.$target.value = input
+      }
+    })
+  }
+})
+
+/**
  * Inject quick actions bar
  */
 const $actionsWrap = document.createElement('div')
@@ -72,25 +128,6 @@ addAction('📱', () => {
       .querySelector('#handsfree-dashboard-wrap')
       .classList.remove('handsfree-dashboard-visible')
     $actionsWrap.classList.remove('handsfree-actions-open')
-  }
-})
-
-/**
- * Pass clicks into dashboard
- */
-Handsfree.use('dashboard.clickThrough', {
-  onFrame({ head }) {
-    if (head.pointer.state === 'mouseDown') {
-      const offset = isAttachedLeft ? 0 : 80
-
-      chrome.runtime.sendMessage({
-        action: 'clickThroughDashboard',
-        pointer: {
-          x: head.pointer.x - offset,
-          y: head.pointer.y
-        }
-      })
-    }
   }
 })
 

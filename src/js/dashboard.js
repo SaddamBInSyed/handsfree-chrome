@@ -33,6 +33,9 @@ document.querySelector('#handsfree-prev-tab').addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'prevTab' })
 })
 
+/**
+ * Handle events
+ */
 chrome.runtime.onMessage.addListener(function(request) {
   switch (request.action) {
     case 'clickThroughDashboard':
