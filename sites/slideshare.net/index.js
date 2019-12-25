@@ -1,18 +1,63 @@
+/**
+ * - Click on a slideshare slide to activate it
+ * - Right hand up goes to next slide
+ * - Left hand up goes to prev slide
+ * - Raise both eyebrows or both hands to deactivate
+ */
 Handsfree.use('slideshare.advanceWithHands', {
   isRightArmUp: false,
   isLeftWristUp: false,
+  isSlideFocused: false,
 
-  onUse() {
-    chrome.runtime.sendMessage({
-      action: 'toggleBodyPix',
-      toggle: true,
-      throttle: 500
-    })
-    handsfree.model.bodypix.enabled = true
+  onFrame({ head, body }) {
+    this.lookForActivationClick(head)
+    this.handleHandGestures(body)
   },
 
-  onFrame({ body }) {
-    if (!body.pose || !body.rightWrist) return
+  /**
+   * Click a slideshare iframe to activate it
+   * - Throttles head tracking
+   * - Enables bodypix
+   */
+  lookForActivationClick(head) {
+    if (head.pointer.state === 'mouseDown') {
+      const $target = head.pointer.$target
+      if (
+        $target &&
+        $target.nodeName === 'IFRAME' &&
+        $target.getAttribute('src').endsWith('/slideshelf')
+      ) {
+        this.isSlideFocused = true
+        this.$slides = $target.contentDocument.querySelector(
+          '.ssIframeLoader'
+        ).contentDocument
+
+        chrome.runtime.sendMessage({
+          action: 'toggleModel',
+          model: 'head',
+          enabled: true,
+          throttle: 500
+        })
+        Handsfree.disable('head.pointer')
+        Handsfree.disable('head.vertScroll')
+
+        chrome.runtime.sendMessage({
+          action: 'toggleModel',
+          model: 'bodypix',
+          enabled: true,
+          throttle: 0
+        })
+      }
+    }
+  },
+
+  /**
+   * Handles hand gestures
+   * - Right hand up to go right
+   * - Left hand up to go left
+   */
+  handleHandGestures(body) {
+    if (!this.isSlideFocused || !body.pose || !body.rightWrist) return
 
     // Advance right
     if (!this.isRightWristUp && body.rightWrist.y < body.rightShoulder.y) {
@@ -31,23 +76,32 @@ Handsfree.use('slideshare.advanceWithHands', {
     }
   },
 
+  /**
+   * Advances to next slide
+   */
   toNextSlide() {
-    const $frame = this.findFrame()
+    const $frame = this.findSlideshareFrame()
     if ($frame) {
       const $btn = $frame.querySelector('#btnNext')
       $btn && $btn.click()
     }
   },
 
+  /**
+   * Advances to previous slide
+   */
   toPrevSlide() {
-    const $frame = this.findFrame()
+    const $frame = this.findSlideshareFrame()
     if ($frame) {
       const $btn = $frame.querySelector('#btnPrevious')
       $btn && $btn.click()
     }
   },
 
-  findFrame() {
+  /**
+   * Finds the first slideshare iframe
+   */
+  findSlideshareFrame() {
     let $foundFrame = null
 
     document.querySelectorAll('iframe').forEach(($frame) => {

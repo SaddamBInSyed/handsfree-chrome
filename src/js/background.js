@@ -215,15 +215,18 @@ chrome.runtime.onMessage.addListener(function(message) {
       break
 
     /**
-     * Toggle Bodypix
+     * Toggles a model on/off, optionally throttling it
+     *
+     * @param {Boolean} message.enabled Whether to enable the model or not
+     * @param {String} message.name The model to throttle ['head', 'bodypix']
+     * @param {Integer} message.throttle How much to throttle the model by
      */
-    case 'toggleBodyPix':
-      if (message.toggle) {
-        handsfree.model.bodypix.enabled = true
-        handsfree.reload()
-        handsfree.throttleModel('bodypix', message.throttle || 0)
-      } else {
-        handsfree.model.bodypix.enabled = false
+    case 'toggleModel':
+      handsfree.model[message.model].enabled = message.enabled
+      handsfree.reload()
+
+      if (message.hasOwnProperty('throttle')) {
+        handsfree.throttleModel(message.model, message.throttle)
       }
 
       break
