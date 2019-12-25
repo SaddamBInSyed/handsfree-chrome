@@ -25,6 +25,11 @@
         "src/js/content.js",
         "src/lib/simple-keyboard/simple-keyboard.js"
       ]
+    },
+
+    {
+      "matches": ["https://www.slideshare.net/*"],
+      "js": ["sites/slideshare.net/index.js"]
     }
   ],
 

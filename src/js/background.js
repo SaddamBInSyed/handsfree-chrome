@@ -45,13 +45,14 @@ Handsfree.use('debugger.streamToTab', {
 /**
  * Sends the inferred values to the client
  */
-Handsfree.use('background.updateHandsfree', ({ head }) => {
+Handsfree.use('background.updateHandsfree', ({ head, body }) => {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     if (!tabs[0]) return
 
     chrome.tabs.sendMessage(tabs[0].id, {
       action: 'updateHandsfree',
-      head
+      head,
+      body
     })
   })
 })
@@ -211,6 +212,20 @@ chrome.runtime.onMessage.addListener(function(message) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, { action: 'start' })
       })
+      break
+
+    /**
+     * Toggle Bodypix
+     */
+    case 'toggleBodyPix':
+      if (message.toggle) {
+        handsfree.model.bodypix.enabled = true
+        handsfree.reload()
+        handsfree.throttleModel('bodypix', message.throttle || 0)
+      } else {
+        handsfree.model.bodypix.enabled = false
+      }
+
       break
   }
 })

@@ -4,7 +4,7 @@ let isDashboardOpen = false
 let hasInjectedDashboard = false
 let $dashboardFrame = null
 
-const handsfree = new Handsfree({
+handsfree = new Handsfree({
   isClient: true
 })
 
@@ -274,6 +274,7 @@ chrome.runtime.onMessage.addListener(function(request) {
      */
     case 'updateHandsfree':
       handsfree.head = request.head
+      handsfree.body = request.body
       break
 
     /**
