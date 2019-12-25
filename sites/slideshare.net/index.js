@@ -12,6 +12,7 @@ Handsfree.use('slideshare.advanceWithHands', {
   onFrame({ head, body }) {
     this.lookForActivationClick(head)
     this.handleHandGestures(body)
+    this.maybeExitFullscreen({ head, body })
   },
 
   /**
@@ -31,6 +32,8 @@ Handsfree.use('slideshare.advanceWithHands', {
         this.$slides = $target.contentDocument.querySelector(
           '.ssIframeLoader'
         ).contentDocument
+
+        this.$slides.querySelector('#btnFullScreen').click()
 
         chrome.runtime.sendMessage({
           action: 'toggleModel',
@@ -112,5 +115,37 @@ Handsfree.use('slideshare.advanceWithHands', {
     })
 
     return $foundFrame
+  },
+
+  /**
+   * Exit full screen when both hands are up or when both eyebrows are up
+   */
+  maybeExitFullscreen({ head, body }) {
+    if (!this.isSlideFocused || !body.pose || !body.rightWrist) return
+
+    if (
+      (body.leftWrist.y < body.leftShoulder.y &&
+        body.rightWrist.y < body.rightShoulder.y) ||
+      head.state.browsUp
+    ) {
+      this.isSlideFocused = false
+
+      this.$slides.querySelector('#btnFullScreen').click()
+
+      chrome.runtime.sendMessage({
+        action: 'toggleModel',
+        model: 'head',
+        enabled: true,
+        throttle: 0
+      })
+      Handsfree.enable('head.pointer')
+      Handsfree.enable('head.vertScroll')
+
+      chrome.runtime.sendMessage({
+        action: 'toggleModel',
+        model: 'bodypix',
+        enabled: false
+      })
+    }
   }
 })

@@ -8,6 +8,7 @@
   bottom: 10px;
   left: 10px;
   z-index: 999999;
+  pointer-events: none;
 }
 
 body .handsfree-debugger canvas {
