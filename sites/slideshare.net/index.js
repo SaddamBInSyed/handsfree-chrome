@@ -10,9 +10,9 @@ Handsfree.use('slideshare.advanceWithHands', {
   isSlideFocused: false,
 
   onFrame({ head, body }) {
-    this.lookForActivationClick(head)
+    this.maybeExitSlideshow({ head, body })
     this.handleHandGestures(body)
-    this.maybeExitFullscreen({ head, body })
+    this.lookForActivationClick(head)
   },
 
   /**
@@ -23,6 +23,7 @@ Handsfree.use('slideshare.advanceWithHands', {
   lookForActivationClick(head) {
     if (head.pointer.state === 'mouseDown') {
       const $target = head.pointer.$target
+
       if (
         $target &&
         $target.nodeName === 'IFRAME' &&
@@ -33,13 +34,11 @@ Handsfree.use('slideshare.advanceWithHands', {
           '.ssIframeLoader'
         ).contentDocument
 
-        this.$slides.querySelector('#btnFullScreen').click()
-
         chrome.runtime.sendMessage({
           action: 'toggleModel',
           model: 'head',
           enabled: true,
-          throttle: 500
+          throttle: 250
         })
         Handsfree.disable('head.pointer')
         Handsfree.disable('head.vertScroll')
@@ -120,7 +119,7 @@ Handsfree.use('slideshare.advanceWithHands', {
   /**
    * Exit full screen when both hands are up or when both eyebrows are up
    */
-  maybeExitFullscreen({ head, body }) {
+  maybeExitSlideshow({ head, body }) {
     if (!this.isSlideFocused || !body.pose || !body.rightWrist) return
 
     if (
@@ -129,9 +128,6 @@ Handsfree.use('slideshare.advanceWithHands', {
       head.state.browsUp
     ) {
       this.isSlideFocused = false
-
-      this.$slides.querySelector('#btnFullScreen').click()
-
       chrome.runtime.sendMessage({
         action: 'toggleModel',
         model: 'head',

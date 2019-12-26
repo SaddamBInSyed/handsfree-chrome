@@ -229,6 +229,8 @@ chrome.runtime.onMessage.addListener(function(message) {
         handsfree.throttleModel(message.model, message.throttle)
       }
 
+      handsfree.zeroBodypixData()
+      handsfree.zeroWebojiData()
       break
   }
 })
