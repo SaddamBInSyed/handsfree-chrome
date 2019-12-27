@@ -21,7 +21,7 @@ Handsfree.use('slideshare.advanceWithHands', {
    * - Enables bodypix
    */
   lookForActivationClick(head) {
-    if (head.pointer.state === 'mouseDown') {
+    if (!this.isSlideFocused && head.pointer.state === 'mouseDown') {
       const $target = head.pointer.$target
 
       if (
@@ -42,6 +42,7 @@ Handsfree.use('slideshare.advanceWithHands', {
         })
         Handsfree.disable('head.pointer')
         Handsfree.disable('head.vertScroll')
+        Handsfree.disable('head.click')
 
         chrome.runtime.sendMessage({
           action: 'toggleModel',
@@ -49,6 +50,9 @@ Handsfree.use('slideshare.advanceWithHands', {
           enabled: true,
           throttle: 0
         })
+
+        handsfree.zeroWebojiData()
+        handsfree.zeroBodypixData()
       }
     }
   },
@@ -134,8 +138,13 @@ Handsfree.use('slideshare.advanceWithHands', {
         enabled: true,
         throttle: 0
       })
+
       Handsfree.enable('head.pointer')
-      Handsfree.enable('head.vertScroll')
+
+      setTimeout(() => {
+        Handsfree.enable('head.vertScroll')
+        Handsfree.enable('head.click')
+      }, 1000)
 
       chrome.runtime.sendMessage({
         action: 'toggleModel',
