@@ -15,5 +15,11 @@ chrome.runtime.onMessage.addListener((request) => {
       enabled: true,
       throttle: 0
     })
+
+    Handsfree.disableAll()
+    Handsfree.enable('head.pointer')
+    Handsfree.enable('head.vertScroll')
+    Handsfree.enable('head.click')
+    Handsfree.enable('head.morphs')
   }
 })
