@@ -234,3 +234,13 @@ chrome.runtime.onMessage.addListener(function(message) {
       break
   }
 })
+
+/**
+ * Update current tab
+ * @see https://developer.chrome.com/extensions/tabs#event-onActivated
+ */
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  chrome.tabs.sendMessage(activeInfo.tabId, {
+    action: 'resetBackgroundPage'
+  })
+})

@@ -24,7 +24,8 @@
         "src/handsfree/handsfree.js",
         "src/js/content.js",
         "src/lib/simple-keyboard/simple-keyboard.js",
-        "src/js/keyboard.js"
+        "src/js/keyboard.js",
+        "src/js/reset.js"
       ]
     },
 
