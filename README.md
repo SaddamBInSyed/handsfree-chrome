@@ -44,6 +44,17 @@ This repository contains the unpacked [Handsfree Chrome Extension](https://hands
 <br>
 <br>
 
+# Local Development
+
+1. [Install Yarn](https://yarnpkg.com/en/docs/install)
+2. Run `cd dashboard && yarn` from the project root to install Dashboard dependencies
+3. Run `yarn dashboard:dev` to work on the Dashboard
+4. Run `yarn dashboard:build` to build `/dashboard/` into `/chrome/dashboard/`
+
+<br>
+<br>
+<br>
+
 # Notes
 
 - This project is built on top of [Handsfree.js](https://github.com/handsfreejs/handsfree)
