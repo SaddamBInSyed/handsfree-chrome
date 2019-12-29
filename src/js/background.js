@@ -267,6 +267,17 @@ chrome.runtime.onMessage.addListener(function(message) {
       break
 
     /**
+     * Navigate to a specific URL
+     */
+    case 'navigateToURL':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.update(tabs[0].id, {
+          url: message.url
+        })
+      })
+      break
+
+    /**
      * Receive a ping and reset the timer
      */
     case 'ping':

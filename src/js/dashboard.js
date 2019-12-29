@@ -9,12 +9,13 @@ const $omnibarSubmit = document.querySelector(
 )
 
 $omnibarSubmit.addEventListener('click', () => {
-  const search = $omnibarInput.value
-  if (search.startsWith('http:') || search.startsWith('https:')) {
-    window.location = search
-  } else {
-    window.location = `https://google.com/search?q=${search.replace(/ /g, '+')}`
+  let search = $omnibarInput.value
+
+  if (!search.startsWith('http:') && !search.startsWith('https:')) {
+    search = `https://google.com/search?q=${search.replace(/ /g, '+')}`
   }
+
+  chrome.runtime.sendMessage({ action: 'navigateToURL', url: search })
 })
 
 // Show keyboard

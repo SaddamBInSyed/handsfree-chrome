@@ -240,6 +240,7 @@ chrome.runtime.onMessage.addListener(function(request) {
         value: '',
         isVirtual: true
       }
+      Handsfree.plugins.virtual.keyboard.setInput('')
       handsfree.on('virtual.keyboard.paste', cb)
       handsfree.on('virtual.keyboard.cancel', cb)
       break
