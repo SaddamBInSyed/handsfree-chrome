@@ -75,7 +75,7 @@ addAction('📱', () => {
         document.body.appendChild($wrap)
 
         $dashboardFrame = document.createElement('iframe')
-        $dashboardFrame.src = chrome.runtime.getURL('src/dashboard.html')
+        $dashboardFrame.src = chrome.runtime.getURL('chrome/dashboard.html')
         $dashboardFrame.id = 'handsfree-dashboard'
         $wrap.appendChild($dashboardFrame)
 

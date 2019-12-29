@@ -8,7 +8,7 @@ chrome.storage.local.set({
 })
 
 // Configure Handsfree
-Handsfree.libSrc = '/src/handsfree/'
+Handsfree.libSrc = '/chrome/handsfree/'
 handsfree = new Handsfree()
 Handsfree.disableAll()
 

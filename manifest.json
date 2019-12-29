@@ -4,10 +4,10 @@
   "description": "Browse the web, watch videos, play games, shop, use social media, and more all handsfree by using face gestures to control a pointer!",
   "manifest_version": 2,
 
-  "options_page": "src/options.html",
+  "options_page": "chrome/options.html",
 
   "background": {
-    "scripts": ["src/handsfree/handsfree.js", "src/js/background.js"],
+    "scripts": ["chrome/handsfree/handsfree.js", "chrome/js/background.js"],
     "persistent": true
   },
 
@@ -16,16 +16,16 @@
       "matches": ["*://*/*"],
       "exclude_matches": ["*://localhost/*"],
       "css": [
-        "src/handsfree/handsfree.css",
-        "src/css/content.css",
-        "src/lib/simple-keyboard/css/index.css"
+        "chrome/handsfree/handsfree.css",
+        "chrome/css/content.css",
+        "chrome/lib/simple-keyboard/css/index.css"
       ],
       "js": [
-        "src/handsfree/handsfree.js",
-        "src/js/content.js",
-        "src/lib/simple-keyboard/simple-keyboard.js",
-        "src/js/keyboard.js",
-        "src/js/reset.js"
+        "chrome/handsfree/handsfree.js",
+        "chrome/js/content.js",
+        "chrome/lib/simple-keyboard/simple-keyboard.js",
+        "chrome/js/keyboard.js",
+        "chrome/js/reset.js"
       ]
     },
 
@@ -37,22 +37,22 @@
 
   "permissions": ["storage", "tabs", "activeTab"],
 
-  "web_accessible_resources": ["src/dashboard.html"],
+  "web_accessible_resources": ["chrome/dashboard.html"],
 
   "icons": {
-    "16": "src/assets/img/favicon.png",
-    "32": "src/assets/img/favicon.png",
-    "48": "src/assets/img/favicon.png",
-    "64": "src/assets/img/favicon.png"
+    "16": "chrome/assets/img/favicon.png",
+    "32": "chrome/assets/img/favicon.png",
+    "48": "chrome/assets/img/favicon.png",
+    "64": "chrome/assets/img/favicon.png"
   },
 
   "browser_action": {
-    "default_popup": "src/popup.html",
+    "default_popup": "chrome/popup.html",
     "default_icon": {
-      "16": "src/assets/img/favicon.png",
-      "32": "src/assets/img/favicon.png",
-      "48": "src/assets/img/favicon.png",
-      "64": "src/assets/img/favicon.png"
+      "16": "chrome/assets/img/favicon.png",
+      "32": "chrome/assets/img/favicon.png",
+      "48": "chrome/assets/img/favicon.png",
+      "64": "chrome/assets/img/favicon.png"
     }
   }
 }
