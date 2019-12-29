@@ -34,6 +34,7 @@ Handsfree.use('virtual.keyboard', {
    */
   cancel() {
     this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
+    handsfree.emit('virtual.keyboard.cancel', { detail: '' })
   },
 
   /**
@@ -42,6 +43,7 @@ Handsfree.use('virtual.keyboard', {
   paste() {
     this.$target.value = this.$textarea.value
     this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
+    handsfree.emit('virtual.keyboard.paste', { detail: this.$target.value })
   },
 
   setInput(input) {

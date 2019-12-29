@@ -218,5 +218,30 @@ chrome.runtime.onMessage.addListener(function(request) {
         $canvas.getContext('2d').putImageData(imageData, 0, 0)
       }
       break
+
+    /**
+     * Shows the keyboard and sends the string on ready
+     */
+    case 'showKeyboard':
+      // Called on cancel/paste
+      const cb = function(data) {
+        chrome.runtime.sendMessage({
+          action: 'updateOmnibar',
+          content: data.detail
+        })
+
+        document.removeEventListener('virtual.keyboard.paste', cb)
+        document.removeEventListener('virtual.keyboard.cancel', cb)
+      }
+
+      // Show keyboard and await
+      Handsfree.plugins.virtual.keyboard.showKeyboard()
+      Handsfree.plugins.virtual.keyboard.$target = {
+        value: '',
+        isVirtual: true
+      }
+      handsfree.on('virtual.keyboard.paste', cb)
+      handsfree.on('virtual.keyboard.cancel', cb)
+      break
   }
 })

@@ -272,6 +272,15 @@ chrome.runtime.onMessage.addListener(function(message) {
     case 'ping':
       receivedPing = true
       break
+
+    /**
+     * Force show the keyboard
+     */
+    case 'showKeyboard':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'showKeyboard' })
+      })
+      break
   }
 })
 

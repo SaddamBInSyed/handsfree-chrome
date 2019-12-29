@@ -17,6 +17,11 @@ $omnibarSubmit.addEventListener('click', () => {
   }
 })
 
+// Show keyboard
+$omnibarInput.addEventListener('focus', () => {
+  chrome.runtime.sendMessage({ action: 'showKeyboard' })
+})
+
 /**
  * Tab management
  */
@@ -59,6 +64,10 @@ chrome.runtime.onMessage.addListener(function(request) {
           $el.focus()
       }
 
+      break
+
+    case 'updateOmnibar':
+      $omnibarInput.value = request.content
       break
   }
 })
