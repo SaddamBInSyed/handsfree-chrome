@@ -292,6 +292,13 @@ chrome.runtime.onMessage.addListener(function(message) {
         chrome.tabs.sendMessage(tabs[0].id, { action: 'showKeyboard' })
       })
       break
+
+    /**
+     * Reload the current tab
+     */
+    case 'refreshTab':
+      chrome.tabs.reload()
+      break
   }
 })
 
