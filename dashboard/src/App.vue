@@ -15,7 +15,48 @@ import TabManagementCard from '@/components/TabManagementCard'
 
 export default {
   name: 'app',
-  components: { TabManagementCard }
+  components: { TabManagementCard },
+
+  mounted() {
+    chrome.runtime.onMessage.addListener(this.onMessage)
+  },
+
+  beforeDestroy() {
+    chrome.runtime.onMessage.removeListener(this.onMessage)
+  },
+
+  methods: {
+    /**
+     * Handle messages
+     */
+    onMessage(request) {
+      switch (request.action) {
+        case 'clickThroughDashboard': {
+          const $el = document.elementFromPoint(
+            request.pointer.x,
+            request.pointer.y
+          )
+
+          if ($el) {
+            $el.dispatchEvent(
+              new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                clientX: request.pointer.x,
+                clientY: request.pointer.y
+              })
+            )
+
+            // Focus
+            if (['INPUT', 'TEXTAREA', 'BUTTON', 'A'].includes($el.nodeName))
+              $el.focus()
+          }
+
+          break
+        }
+      }
+    }
+  }
 }
 </script>
 

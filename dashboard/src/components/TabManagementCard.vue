@@ -16,6 +16,9 @@
 <script>
 export default {
   methods: {
+    /**
+     * Tab manaagemenet controls
+     */
     prevTab() {
       chrome.runtime.sendMessage({ action: 'prevTab' })
     },
