@@ -12,8 +12,8 @@
   display: none;
 }
 
-.handsfree-pointer.handsfree-pointer-2 {
-  border-color: #0f0;
+.handsfree-scroll-focus {
+  outline: 3px solid #f00;
 }
 
 .handsfree-started .handsfree-pointer {
@@ -82,6 +82,19 @@
 .handsfree-started button.handsfree-stop,
 .handsfree-started span.handsfree-stop {
   display: inline-block;
+}
+
+.handsfree-started .handsfree-show-when-stopped {
+  display: none;
+}
+.handsfree-show-when-started {
+  display: none;
+}
+.handsfree-started .handsfree-show-when-started {
+  display: initial;
+}
+.handsfree-loading .handsfree-show-when-loading {
+  display: initial;
 }
 
 /* Click animation */

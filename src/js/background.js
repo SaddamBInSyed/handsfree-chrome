@@ -1,3 +1,8 @@
+// Number of milliseconds to wait before reloading tab
+const PING_TIMEOUT = 8000
+// Number of milliseconds to wait before trying to reload the page again (useful for very slow sites)
+const PING_RELOAD_TIMEOUT = 3000
+
 chrome.storage.local.set({
   isHandsfreeStarted: false
 })
@@ -45,15 +50,44 @@ Handsfree.use('debugger.streamToTab', {
 /**
  * Sends the inferred values to the client
  */
-Handsfree.use('background.updateHandsfree', ({ head }) => {
+Handsfree.use('background.updateHandsfree', ({ head, body }) => {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     if (!tabs[0]) return
 
     chrome.tabs.sendMessage(tabs[0].id, {
       action: 'updateHandsfree',
-      head
+      head,
+      body
     })
   })
+})
+
+/**
+ * Reload tab if a ping isn't received from the client
+ */
+let receivedPing = true
+let lastPing = 0
+let isReloading = false
+
+Handsfree.use('background.ping', () => {
+  if (isReloading) return
+
+  if (receivedPing) {
+    lastPing = new Date().getTime()
+  } else {
+    console.log('Time eloped:', new Date().getTime() - lastPing)
+  }
+
+  if (new Date().getTime() - lastPing > PING_TIMEOUT) {
+    chrome.tabs.reload()
+    isReloading = true
+
+    setTimeout(() => {
+      isReloading = false
+    }, PING_RELOAD_TIMEOUT)
+  }
+
+  receivedPing = false
 })
 
 /**
@@ -212,5 +246,61 @@ chrome.runtime.onMessage.addListener(function(message) {
         chrome.tabs.sendMessage(tabs[0].id, { action: 'start' })
       })
       break
+
+    /**
+     * Toggles a model on/off, optionally throttling it
+     *
+     * @param {Boolean} message.enabled Whether to enable the model or not
+     * @param {String} message.name The model to throttle ['head', 'bodypix']
+     * @param {Integer} message.throttle How much to throttle the model by
+     */
+    case 'toggleModel':
+      handsfree.model[message.model].enabled = message.enabled
+      handsfree.reload()
+
+      if (message.hasOwnProperty('throttle')) {
+        handsfree.throttleModel(message.model, message.throttle)
+      }
+
+      handsfree.zeroWebojiData()
+      handsfree.zeroBodypixData()
+      break
+
+    /**
+     * Navigate to a specific URL
+     */
+    case 'navigateToURL':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.update(tabs[0].id, {
+          url: message.url
+        })
+      })
+      break
+
+    /**
+     * Receive a ping and reset the timer
+     */
+    case 'ping':
+      receivedPing = true
+      break
+
+    /**
+     * Force show the keyboard
+     */
+    case 'showKeyboard':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'showKeyboard' })
+      })
+      break
   }
+})
+
+/**
+ * Update current tab
+ * @see https://developer.chrome.com/extensions/tabs#event-onActivated
+ */
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  chrome.tabs.sendMessage(activeInfo.tabId, {
+    action: 'resetBackgroundPage'
+  })
 })
