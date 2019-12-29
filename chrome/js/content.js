@@ -13,7 +13,10 @@ handsfree = new Handsfree({
  */
 Handsfree.use('dashboard.clickThrough', {
   onFrame({ head }) {
-    if (head.pointer.state === 'mouseDown') {
+    if (
+      head.pointer.state === 'mouseDown' &&
+      head.pointer.$target === $dashboardFrame
+    ) {
       const offset = isAttachedLeft ? 0 : 80
 
       chrome.runtime.sendMessage({
