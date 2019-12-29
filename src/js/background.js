@@ -1,3 +1,8 @@
+// Number of milliseconds to wait before reloading tab
+const PING_TIMEOUT = 8000
+// Number of milliseconds to wait before trying to reload the page again (useful for very slow sites)
+const PING_RELOAD_TIMEOUT = 3000
+
 chrome.storage.local.set({
   isHandsfreeStarted: false
 })
@@ -55,6 +60,34 @@ Handsfree.use('background.updateHandsfree', ({ head, body }) => {
       body
     })
   })
+})
+
+/**
+ * Reload tab if a ping isn't received from the client
+ */
+let receivedPing = true
+let lastPing = 0
+let isReloading = false
+
+Handsfree.use('background.ping', () => {
+  if (isReloading) return
+
+  if (receivedPing) {
+    lastPing = new Date().getTime()
+  } else {
+    console.log('Time eloped:', new Date().getTime() - lastPing)
+  }
+
+  if (new Date().getTime() - lastPing > PING_TIMEOUT) {
+    chrome.tabs.reload()
+    isReloading = true
+
+    setTimeout(() => {
+      isReloading = false
+    }, PING_RELOAD_TIMEOUT)
+  }
+
+  receivedPing = false
 })
 
 /**
@@ -231,6 +264,13 @@ chrome.runtime.onMessage.addListener(function(message) {
 
       handsfree.zeroWebojiData()
       handsfree.zeroBodypixData()
+      break
+
+    /**
+     * Receive a ping and reset the timer
+     */
+    case 'ping':
+      receivedPing = true
       break
   }
 })

@@ -28,6 +28,15 @@ Handsfree.use('dashboard.clickThrough', {
 })
 
 /**
+ * Pingback
+ */
+Handsfree.use('background.ping', () => {
+  chrome.runtime.sendMessage({
+    action: 'ping'
+  })
+})
+
+/**
  * Inject quick actions bar
  */
 const $actionsWrap = document.createElement('div')
