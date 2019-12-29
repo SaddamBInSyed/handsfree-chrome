@@ -4,7 +4,8 @@
   "description": "A chrome extension that helps you browse the web handsfree 👋",
   "main": "index.js",
   "scripts": {
-    "dashboard:dev": "cd dashboard && yarn serve"
+    "dashboard:dev": "cd dashboard && yarn serve",
+    "dashboard:build": "cd dashboard && yarn build"
   },
   "repository": {
     "type": "git",

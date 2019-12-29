@@ -37,7 +37,7 @@
 
   "permissions": ["storage", "tabs", "activeTab"],
 
-  "web_accessible_resources": ["chrome/dashboard.html"],
+  "web_accessible_resources": ["chrome/dashboard/*"],
 
   "icons": {
     "16": "chrome/assets/img/favicon.png",
