@@ -4,5 +4,8 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 export default new VueRouter({
-  routes: [{ path: '/calibrate', component: () => import('@/views/Calibrate') }]
+  routes: [
+    { path: '/', component: () => import('@/views/Home') },
+    { path: '/calibrate', component: () => import('@/views/Calibrate') }
+  ]
 })

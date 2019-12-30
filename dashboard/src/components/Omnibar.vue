@@ -7,11 +7,15 @@
 <script>
 export default {
   mounted() {
-    chrome.runtime.onMessage.addListener(this.onMessage)
+    chrome &&
+      chrome.runtime.onMessage &&
+      chrome.runtime.onMessage.addListener(this.onMessage)
   },
 
   beforeDestroy() {
-    chrome.runtime.onMessage.removeListener(this.onMessage)
+    chrome &&
+      chrome.runtime.onMessage &&
+      chrome.runtime.onMessage.removeListener(this.onMessage)
   },
 
   data: () => ({

@@ -2,26 +2,26 @@
   .panel.pa-3.full-height
     .panel-body
       Omnibar
-
-      .columns.mt-3
-        .column.col-4
-          TabManagementCard
+      router-view
 </template>
 
 <script>
-import TabManagementCard from '@/components/TabManagementCard'
 import Omnibar from '@/components/Omnibar'
 
 export default {
   name: 'app',
-  components: { TabManagementCard, Omnibar },
+  components: { Omnibar },
 
   mounted() {
-    chrome.runtime.onMessage.addListener(this.onMessage)
+    chrome &&
+      chrome.runtime.onMessage &&
+      chrome.runtime.onMessage.addListener(this.onMessage)
   },
 
   beforeDestroy() {
-    chrome.runtime.onMessage.removeListener(this.onMessage)
+    chrome &&
+      chrome.runtime.onMessage &&
+      chrome.runtime.onMessage.removeListener(this.onMessage)
   },
 
   methods: {
