@@ -255,19 +255,52 @@ chrome.runtime.onMessage.addListener(function(message) {
      */
     case 'startCalibration':
       Handsfree.use('head.calibration', {
+        framesCalibrated: 0,
+        numFramesToCalibrate: 60,
+
         onFrame({ head }) {
           const leftOffset = !isAttachedLeft ? 80 : 0
+          const dist = Math.sqrt(
+            Math.pow(head.pointer.x - (message.center.x + leftOffset), 2) +
+              Math.pow(head.pointer.y - message.center.y, 2)
+          )
+
+          this.step(head, leftOffset, dist)
+          this.maybeEndCalibration(dist)
+        },
+
+        /**
+         * Step the pointer towards the center
+         */
+        step(head, leftOffset, dist) {
+          const stepSize = dist < 40 ? 3 : 20
 
           // Move toward center
           if (head.pointer.x < message.center.x + leftOffset) {
-            Handsfree.plugins.head.pointer.config.offset.x += 3
+            Handsfree.plugins.head.pointer.config.offset.x += stepSize
           } else {
-            Handsfree.plugins.head.pointer.config.offset.x -= 3
+            Handsfree.plugins.head.pointer.config.offset.x -= stepSize
           }
           if (head.pointer.y < message.center.y) {
-            Handsfree.plugins.head.pointer.config.offset.y += 3
+            Handsfree.plugins.head.pointer.config.offset.y += stepSize
           } else {
-            Handsfree.plugins.head.pointer.config.offset.y -= 3
+            Handsfree.plugins.head.pointer.config.offset.y -= stepSize
+          }
+        },
+
+        /**
+         * Ends calibration when the pointer is near the center
+         */
+        maybeEndCalibration(dist) {
+          if (dist < 30) {
+            this.framesCalibrated++
+          } else {
+            this.framesCalibrated = 0
+          }
+
+          if (this.framesCalibrated > this.numFramesToCalibrate) {
+            Handsfree.disable('head.calibration')
+            chrome.runtime.sendMessage({ action: 'endCalibration' })
           }
         }
       })

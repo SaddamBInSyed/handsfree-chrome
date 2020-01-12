@@ -18,7 +18,24 @@ export default {
     isAboutToCalibrate: false
   }),
 
+  mounted() {
+    chrome.runtime.onMessage.addListener(this.listen)
+  },
+
+  beforeDestroy() {
+    chrome.runtime.onMessage.removeListener(this.listen)
+  },
+
   methods: {
+    listen(message) {
+      switch (message.action) {
+        case 'endCalibration':
+          this.isCalibrating = false
+          this.isAboutToCalibrate = false
+          break
+      }
+    },
+
     /**
      * Starts the calibration process
      */

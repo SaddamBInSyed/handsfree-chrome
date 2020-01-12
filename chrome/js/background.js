@@ -310,6 +310,18 @@ chrome.runtime.onMessage.addListener(function(message) {
           center: message.center
         })
       })
+      break
+
+    /**
+     * End Calibration
+     */
+    case 'endCalibration':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'endCalibration'
+        })
+      })
+      break
   }
 })
 
