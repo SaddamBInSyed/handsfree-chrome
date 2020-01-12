@@ -176,14 +176,14 @@ chrome.storage.local.get(['isDebuggerVisible'], function(data) {
 /**
  * Handle messages from background script
  */
-chrome.runtime.onMessage.addListener(function(request) {
-  switch (request.action) {
+chrome.runtime.onMessage.addListener(function(message) {
+  switch (message.action) {
     /**
      * Update the handsfree properties
      */
     case 'updateHandsfree':
-      handsfree.head = request.head
-      handsfree.body = request.body
+      handsfree.head = message.head
+      handsfree.body = message.body
       break
 
     /**
@@ -202,7 +202,7 @@ chrome.runtime.onMessage.addListener(function(request) {
      * Toggle the debugger on/off
      */
     case 'toggleDebugger':
-      if (request.isVisible) {
+      if (message.isVisible) {
         handsfree.showDebugger()
       } else {
         handsfree.hideDebugger()
@@ -214,11 +214,11 @@ chrome.runtime.onMessage.addListener(function(request) {
      */
     case 'updateDebugger':
       const $canvas = handsfree.debugger.canvas
-      if (request.imageData) {
+      if (message.imageData) {
         const imageData = new ImageData(
-          new Uint8ClampedArray(Object.values(request.imageData.data)),
-          request.width,
-          request.height
+          new Uint8ClampedArray(Object.values(message.imageData.data)),
+          message.width,
+          message.height
         )
         $canvas.getContext('2d').putImageData(imageData, 0, 0)
       }
@@ -248,6 +248,29 @@ chrome.runtime.onMessage.addListener(function(request) {
       Handsfree.plugins.virtual.keyboard.setInput('')
       handsfree.on('virtual.keyboard.paste', cb)
       handsfree.on('virtual.keyboard.cancel', cb)
+      break
+
+    /**
+     * Starts the calibration process
+     */
+    case 'startCalibration':
+      Handsfree.use('head.calibration', {
+        onFrame({ head }) {
+          const leftOffset = !isAttachedLeft ? 80 : 0
+
+          // Move toward center
+          if (head.pointer.x < message.center.x + leftOffset) {
+            Handsfree.plugins.head.pointer.config.offset.x += 3
+          } else {
+            Handsfree.plugins.head.pointer.config.offset.x -= 3
+          }
+          if (head.pointer.y < message.center.y) {
+            Handsfree.plugins.head.pointer.config.offset.y += 3
+          } else {
+            Handsfree.plugins.head.pointer.config.offset.y -= 3
+          }
+        }
+      })
       break
   }
 })

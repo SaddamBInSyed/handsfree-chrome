@@ -299,6 +299,17 @@ chrome.runtime.onMessage.addListener(function(message) {
     case 'refreshTab':
       chrome.tabs.reload()
       break
+
+    /**
+     * Start calibration
+     */
+    case 'startCalibration':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'startCalibration',
+          center: message.center
+        })
+      })
   }
 })
 

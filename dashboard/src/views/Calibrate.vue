@@ -8,7 +8,7 @@
         button.btn.btn-primary.btn-xl(@click='startCalibration') Start calibration
       p(v-if='isAboutToCalibrate || isCalibrating')
         button.btn.btn-primary.btn-xl(disabled) Point head towards circle below
-      #calibration-marker(v-if='isCalibrating || isAboutToCalibrate')
+      #calibration-marker(ref='marker' v-if='isCalibrating || isAboutToCalibrate')
 </template>
 
 <script>
@@ -27,14 +27,15 @@ export default {
       setTimeout(() => {
         this.isAboutToCalibrate = false
         this.isCalibrating = true
+        const bounds = this.$refs.marker.getBoundingClientRect()
 
         chrome &&
           chrome.runtime.sendMessage &&
           chrome.runtime.sendMessage({
             action: 'startCalibration',
             center: {
-              x: 0,
-              y: 0
+              x: bounds.left + bounds.width / 2,
+              y: bounds.top + bounds.height / 2
             }
           })
       }, 2000)
