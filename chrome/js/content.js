@@ -9,6 +9,15 @@ handsfree = new Handsfree({
 })
 
 /**
+ * Load settings
+ */
+chrome.storage.local.get(['offset'], (data) => {
+  if (data.offset) {
+    Handsfree.plugins.head.pointer.config.offset = data.offset
+  }
+})
+
+/**
  * Pass clicks into dashboard
  */
 Handsfree.use('dashboard.clickThrough', {
@@ -300,10 +309,20 @@ chrome.runtime.onMessage.addListener(function(message) {
 
           if (this.framesCalibrated > this.numFramesToCalibrate) {
             Handsfree.disable('head.calibration')
-            chrome.runtime.sendMessage({ action: 'endCalibration' })
+            chrome.runtime.sendMessage({
+              action: 'endCalibration',
+              offset: Handsfree.plugins.head.pointer.config.offset
+            })
           }
         }
       })
+      break
+
+    /**
+     * Update calibration
+     */
+    case 'updateCalibration':
+      Handsfree.plugins.head.pointer.config.offset = message.offset
       break
   }
 })

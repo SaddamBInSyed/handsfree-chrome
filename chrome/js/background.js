@@ -7,7 +7,9 @@ chrome.storage.local.set({
   isHandsfreeStarted: false
 })
 
-// Configure Handsfree
+/**
+ * Configure Handsfree
+ */
 Handsfree.libSrc = '/chrome/handsfree/'
 handsfree = new Handsfree()
 Handsfree.disableAll()
@@ -316,17 +318,21 @@ chrome.runtime.onMessage.addListener(function(message) {
      * End Calibration
      */
     case 'endCalibration':
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: 'endCalibration'
-        })
+      chrome.storage.local.set({ offset: message.offset })
+      chrome.tabs.query({}, function(tabs) {
+        for (var i = 0; i < tabs.length; ++i) {
+          chrome.tabs.sendMessage(tabs[i].id, {
+            action: 'updateCalibration',
+            offset: message.offset
+          })
+        }
       })
       break
   }
 })
 
 /**
- * Update current tab
+ * Update current tabs
  * @see https://developer.chrome.com/extensions/tabs#event-onActivated
  */
 chrome.tabs.onActivated.addListener((activeInfo) => {
