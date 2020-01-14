@@ -1,5 +1,7 @@
 <template lang="pug">
   .container.mt-3
+    p
+      router-link.btn.btn-primary(to='/' tag='button') ◀ Back to home
     h1 Calibrate
     p Click the calibration button below and then point your head at the calibration dot that appears below it. The pointer will readjust itself until it reaches the calibration dot and hovers over it for 3 seconds.
 
