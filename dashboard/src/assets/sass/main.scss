@@ -1,0 +1,30 @@
+@import '../../../node_modules/spectre.css/dist/spectre.css';
+
+.mt-3 {
+  margin-top: 20px;
+}
+.pa-3 {
+  padding: 20px;
+}
+
+.block {
+  display: block;
+  width: 100%;
+}
+
+.input-xl,
+.btn-xl {
+  padding: 0.35rem 0.6rem;
+  height: 3.5rem;
+  font-size: 1rem;
+}
+
+html,
+body,
+.full-height {
+  height: 100%;
+}
+
+.text-center {
+  text-align: center;
+}

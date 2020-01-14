@@ -21,6 +21,7 @@ chrome.runtime.onMessage.addListener((request) => {
     Handsfree.enable('head.vertScroll')
     Handsfree.enable('head.click')
     Handsfree.enable('head.morphs')
+    Handsfree.enable('virtual.keyboard')
     Handsfree.enable('dashboard.clickThrough')
     Handsfree.enable('background.ping')
   }

@@ -9,11 +9,23 @@ handsfree = new Handsfree({
 })
 
 /**
+ * Load settings
+ */
+chrome.storage.local.get(['offset'], (data) => {
+  if (data.offset) {
+    Handsfree.plugins.head.pointer.config.offset = data.offset
+  }
+})
+
+/**
  * Pass clicks into dashboard
  */
 Handsfree.use('dashboard.clickThrough', {
   onFrame({ head }) {
-    if (head.pointer.state === 'mouseDown') {
+    if (
+      head.pointer.state === 'mouseDown' &&
+      head.pointer.$target === $dashboardFrame
+    ) {
       const offset = isAttachedLeft ? 0 : 80
 
       chrome.runtime.sendMessage({
@@ -75,7 +87,9 @@ addAction('📱', () => {
         document.body.appendChild($wrap)
 
         $dashboardFrame = document.createElement('iframe')
-        $dashboardFrame.src = chrome.runtime.getURL('src/dashboard.html')
+        $dashboardFrame.src = chrome.runtime.getURL(
+          'chrome/dashboard/index.html'
+        )
         $dashboardFrame.id = 'handsfree-dashboard'
         $wrap.appendChild($dashboardFrame)
 
@@ -171,14 +185,14 @@ chrome.storage.local.get(['isDebuggerVisible'], function(data) {
 /**
  * Handle messages from background script
  */
-chrome.runtime.onMessage.addListener(function(request) {
-  switch (request.action) {
+chrome.runtime.onMessage.addListener(function(message) {
+  switch (message.action) {
     /**
      * Update the handsfree properties
      */
     case 'updateHandsfree':
-      handsfree.head = request.head
-      handsfree.body = request.body
+      handsfree.head = message.head
+      handsfree.body = message.body
       break
 
     /**
@@ -197,7 +211,7 @@ chrome.runtime.onMessage.addListener(function(request) {
      * Toggle the debugger on/off
      */
     case 'toggleDebugger':
-      if (request.isVisible) {
+      if (message.isVisible) {
         handsfree.showDebugger()
       } else {
         handsfree.hideDebugger()
@@ -209,11 +223,11 @@ chrome.runtime.onMessage.addListener(function(request) {
      */
     case 'updateDebugger':
       const $canvas = handsfree.debugger.canvas
-      if (request.imageData) {
+      if (message.imageData) {
         const imageData = new ImageData(
-          new Uint8ClampedArray(Object.values(request.imageData.data)),
-          request.width,
-          request.height
+          new Uint8ClampedArray(Object.values(message.imageData.data)),
+          message.width,
+          message.height
         )
         $canvas.getContext('2d').putImageData(imageData, 0, 0)
       }
@@ -243,6 +257,72 @@ chrome.runtime.onMessage.addListener(function(request) {
       Handsfree.plugins.virtual.keyboard.setInput('')
       handsfree.on('virtual.keyboard.paste', cb)
       handsfree.on('virtual.keyboard.cancel', cb)
+      break
+
+    /**
+     * Starts the calibration process
+     */
+    case 'startCalibration':
+      Handsfree.use('head.calibration', {
+        framesCalibrated: 0,
+        numFramesToCalibrate: 60,
+
+        onFrame({ head }) {
+          const leftOffset = !isAttachedLeft ? 80 : 0
+          const dist = Math.sqrt(
+            Math.pow(head.pointer.x - (message.center.x + leftOffset), 2) +
+              Math.pow(head.pointer.y - message.center.y, 2)
+          )
+
+          this.step(head, leftOffset, dist)
+          this.maybeEndCalibration(dist)
+        },
+
+        /**
+         * Step the pointer towards the center
+         */
+        step(head, leftOffset, dist) {
+          const stepSize = dist < 40 ? 3 : 20
+
+          // Move toward center
+          if (head.pointer.x < message.center.x + leftOffset) {
+            Handsfree.plugins.head.pointer.config.offset.x += stepSize
+          } else {
+            Handsfree.plugins.head.pointer.config.offset.x -= stepSize
+          }
+          if (head.pointer.y < message.center.y) {
+            Handsfree.plugins.head.pointer.config.offset.y += stepSize
+          } else {
+            Handsfree.plugins.head.pointer.config.offset.y -= stepSize
+          }
+        },
+
+        /**
+         * Ends calibration when the pointer is near the center
+         */
+        maybeEndCalibration(dist) {
+          if (dist < 30) {
+            this.framesCalibrated++
+          } else {
+            this.framesCalibrated = 0
+          }
+
+          if (this.framesCalibrated > this.numFramesToCalibrate) {
+            Handsfree.disable('head.calibration')
+            chrome.runtime.sendMessage({
+              action: 'endCalibration',
+              offset: Handsfree.plugins.head.pointer.config.offset
+            })
+          }
+        }
+      })
+      break
+
+    /**
+     * Update calibration
+     */
+    case 'updateCalibration':
+      Handsfree.plugins.head.pointer.config.offset = message.offset
       break
   }
 })

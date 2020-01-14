@@ -7,6 +7,13 @@ Handsfree.use('virtual.keyboard', {
   $target: null,
   $textarea: null,
   input: '',
+  $wrap: null,
+
+  onUse() {
+    window.addEventListener('resize', () => {
+      this.resizeKeyboard()
+    })
+  },
 
   onFrame({ head }) {
     if (head.pointer.state === 'mouseDown' && head.pointer.$target) {
@@ -19,11 +26,29 @@ Handsfree.use('virtual.keyboard', {
   },
 
   /**
+   * Resizes the keyboard
+   */
+  resizeKeyboard(elementHeight) {
+    if (elementHeight <= 0 || !this.$wrap) return
+
+    if (!elementHeight || this.$wrap.clientHeight > window.innerHeight) {
+      if (!elementHeight) elementHeight = 100
+
+      this.$wrap.querySelectorAll('.hg-button').forEach((btn) => {
+        btn.style.height = `${elementHeight}px`
+      })
+
+      this.resizeKeyboard(elementHeight - 10)
+    }
+  },
+
+  /**
    * Either creates or shows the keyboard
    */
   showKeyboard() {
     if (!this.keyboard) {
       this.createKeyboard()
+      this.resizeKeyboard()
     } else {
       this.$wrap.classList.add('handsfree-simple-keyboard-visible')
     }
