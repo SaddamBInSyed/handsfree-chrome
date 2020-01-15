@@ -74,22 +74,26 @@ let isReloading = false
 Handsfree.use('background.ping', () => {
   if (isReloading) return
 
-  if (receivedPing) {
-    lastPing = new Date().getTime()
-  } else {
-    console.log('Time eloped:', new Date().getTime() - lastPing)
-  }
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0].url.startsWith('http') || tabs[0].url.startsWith('file')) {
+      if (receivedPing) {
+        lastPing = new Date().getTime()
+      } else {
+        console.log('Time eloped:', new Date().getTime() - lastPing)
+      }
 
-  if (new Date().getTime() - lastPing > PING_TIMEOUT) {
-    chrome.tabs.reload()
-    isReloading = true
+      if (new Date().getTime() - lastPing > PING_TIMEOUT) {
+        chrome.tabs.reload()
+        isReloading = true
 
-    setTimeout(() => {
-      isReloading = false
-    }, PING_RELOAD_TIMEOUT)
-  }
+        setTimeout(() => {
+          isReloading = false
+        }, PING_RELOAD_TIMEOUT)
+      }
 
-  receivedPing = false
+      receivedPing = false
+    }
+  })
 })
 
 /**
