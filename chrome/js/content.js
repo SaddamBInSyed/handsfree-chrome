@@ -77,6 +77,7 @@ addAction('📱', () => {
   isDashboardOpen = !isDashboardOpen
   if (isDashboardOpen) {
     $actionsWrap.classList.add('handsfree-actions-open')
+    Handsfree.disable('head.vertScroll')
 
     if (!hasInjectedDashboard) {
       // Avoid recursive frame insertion...
@@ -110,6 +111,8 @@ addAction('📱', () => {
 
     hasInjectedDashboard = true
   } else {
+    Handsfree.enable('head.vertScroll')
+
     document
       .querySelector('#handsfree-dashboard-wrap')
       .classList.remove('handsfree-dashboard-visible')
