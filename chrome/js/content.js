@@ -282,7 +282,7 @@ chrome.runtime.onMessage.addListener(function(message) {
          * Step the pointer towards the center
          */
         step(head, leftOffset, dist) {
-          const stepSize = dist < 40 ? 3 : 20
+          const stepSize = dist < 60 ? 3 : 20
 
           // Move toward center
           if (head.pointer.x < message.center.x + leftOffset) {

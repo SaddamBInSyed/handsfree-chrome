@@ -46,6 +46,8 @@ Handsfree.use('virtual.keyboard', {
    * Either creates or shows the keyboard
    */
   showKeyboard() {
+    Handsfree.disable('head.vertScroll')
+
     if (!this.keyboard) {
       this.createKeyboard()
       this.resizeKeyboard()
@@ -58,6 +60,8 @@ Handsfree.use('virtual.keyboard', {
    * Close the keyboard
    */
   cancel() {
+    Handsfree.enable('head.vertScroll')
+
     this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
     handsfree.emit('virtual.keyboard.cancel', { detail: '' })
   },
@@ -66,6 +70,8 @@ Handsfree.use('virtual.keyboard', {
    * Close the keyboard
    */
   paste() {
+    Handsfree.enable('head.vertScroll')
+
     this.$target.value = this.$textarea.value
     this.$wrap.classList.remove('handsfree-simple-keyboard-visible')
     handsfree.emit('virtual.keyboard.paste', { detail: this.$target.value })
