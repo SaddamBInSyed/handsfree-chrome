@@ -7,6 +7,7 @@ let $dashboardFrame = null
 handsfree = new Handsfree({
   isClient: true
 })
+Handsfree.enable('head.ghostedPointer')
 
 /**
  * Load settings
@@ -194,7 +195,10 @@ chrome.runtime.onMessage.addListener(function(message) {
      * Update the handsfree properties
      */
     case 'updateHandsfree':
+      const pointer = handsfree.head.pointer
       handsfree.head = message.head
+      handsfree.head.pointer = pointer
+
       handsfree.body = message.body
       break
 
@@ -263,6 +267,14 @@ chrome.runtime.onMessage.addListener(function(message) {
       break
 
     /**
+     * Add calibrating class
+     */
+    case 'preCalibration':
+      console.log('CALLED PRECALIBRATION')
+      document.body.classList.add('handsfree-calibrating')
+      break
+
+    /**
      * Starts the calibration process
      */
     case 'startCalibration':
@@ -312,6 +324,7 @@ chrome.runtime.onMessage.addListener(function(message) {
 
           if (this.framesCalibrated > this.numFramesToCalibrate) {
             Handsfree.disable('head.calibration')
+            document.body.classList.remove('handsfree-calibrating')
             chrome.runtime.sendMessage({
               action: 'endCalibration',
               offset: Handsfree.plugins.head.pointer.config.offset

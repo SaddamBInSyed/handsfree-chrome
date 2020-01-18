@@ -306,6 +306,14 @@ chrome.runtime.onMessage.addListener(function(message) {
       chrome.tabs.reload()
       break
 
+    case 'preCalibration':
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'preCalibration'
+        })
+      })
+      break
+
     /**
      * Start calibration
      */

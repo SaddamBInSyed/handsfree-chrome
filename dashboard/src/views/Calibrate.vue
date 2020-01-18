@@ -43,6 +43,10 @@ export default {
      */
     startCalibration() {
       this.isAboutToCalibrate = true
+      chrome.runtime.sendMessage({
+        action: 'preCalibration'
+      })
+
       setTimeout(() => {
         this.isAboutToCalibrate = false
         this.isCalibrating = true

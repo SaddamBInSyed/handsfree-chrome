@@ -17,6 +17,7 @@ chrome.runtime.onMessage.addListener((request) => {
     })
 
     Handsfree.disableAll()
+    Handsfree.enable('head.ghostedPointer')
     Handsfree.enable('head.pointer')
     Handsfree.enable('head.vertScroll')
     Handsfree.enable('head.click')
